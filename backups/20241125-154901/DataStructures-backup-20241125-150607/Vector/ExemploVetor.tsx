@@ -1,0 +1,116 @@
+import React, { useState } from "react";
+import { useVetor } from "./useVetor";
+import { VisualizacaoVetor } from "./VisualizacaoVetor";
+import { InformacoesVetor } from "./InformacoesVetor";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Alert } from "@/components/ui/alert";
+
+export function ExemploVetor() {
+  const [valorEntrada, setValorEntrada] = useState("");
+  const [indice, setIndice] = useState("");
+  const [erro, setErro] = useState<string | null>(null);
+  const {
+    elementos,
+    inserir,
+    remover,
+    adicionarNoFinal,
+    limpar,
+    historico
+  } = useVetor<number>();
+
+  const handleInserir = () => {
+    try {
+      const valor = Number(valorEntrada);
+      const idx = Number(indice);
+      if (isNaN(valor) || isNaN(idx)) {
+        throw new Error("Valor ou indice invalido");
+      }
+      inserir(idx, valor);
+      setValorEntrada("");
+      setIndice("");
+      setErro(null);
+    } catch (e) {
+      setErro((e as Error).message);
+    }
+  };
+
+  const handleAdicionarNoFinal = () => {
+    try {
+      const valor = Number(valorEntrada);
+      if (isNaN(valor)) {
+        throw new Error("Valor invalido");
+      }
+      adicionarNoFinal(valor);
+      setValorEntrada("");
+      setErro(null);
+    } catch (e) {
+      setErro((e as Error).message);
+    }
+  };
+
+  const handleRemover = () => {
+    try {
+      const idx = Number(indice);
+      if (isNaN(idx)) {
+        throw new Error("Indice invalido");
+      }
+      remover(idx);
+      setIndice("");
+      setErro(null);
+    } catch (e) {
+      setErro((e as Error).message);
+    }
+  };
+
+  return (
+    <div className="space-y-6 p-4">
+      <InformacoesVetor />
+      
+      <div className="space-y-4">
+        <div className="flex gap-2">
+          <Input
+            type="number"
+            value={valorEntrada}
+            onChange={(e) => setValorEntrada(e.target.value)}
+            placeholder="Valor"
+            className="w-32"
+          />
+          <Input
+            type="number"
+            value={indice}
+            onChange={(e) => setIndice(e.target.value)}
+            placeholder="Indice"
+            className="w-32"
+          />
+          <Button onClick={handleInserir}>Inserir</Button>
+          <Button onClick={handleAdicionarNoFinal}>Adicionar no Final</Button>
+          <Button onClick={handleRemover} variant="destructive">Remover</Button>
+          <Button onClick={limpar} variant="outline">Limpar</Button>
+        </div>
+
+        {erro && (
+          <Alert variant="destructive">
+            <p>{erro}</p>
+          </Alert>
+        )}
+
+        <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
+          <h3 className="text-lg font-semibold mb-2">Visualizacao</h3>
+          <VisualizacaoVetor elementos={elementos} />
+        </div>
+
+        <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
+          <h3 className="text-lg font-semibold mb-2">Historico de Operacoes</h3>
+          <ul className="space-y-1">
+            {historico.map((operacao, index) => (
+              <li key={index} className="text-sm text-gray-600 dark:text-gray-400">
+                {operacao}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,60 @@
+import { useState, useCallback } from "react";
+import { Vetor } from "./vetor";
+
+export function useVetor<T>(capacidadeInicial: number = 10) {
+  const [vetor] = useState(() => new Vetor<T>(capacidadeInicial));
+  const [elementos, setElementos] = useState<T[]>([]);
+  const [historico, setHistorico] = useState<string[]>([]);
+
+  const adicionarAoHistorico = (operacao: string) => {
+    setHistorico(anterior => [...anterior, operacao]);
+  };
+
+  const inserir = useCallback((indice: number, elemento: T) => {
+    vetor.inserir(indice, elemento);
+    setElementos(vetor.paraArray());
+    adicionarAoHistorico(`Inserido ${elemento} no indice ${indice}`);
+  }, [vetor]);
+
+  const remover = useCallback((indice: number) => {
+    const removido = vetor.remover(indice);
+    setElementos(vetor.paraArray());
+    adicionarAoHistorico(`Removido ${removido} do indice ${indice}`);
+    return removido;
+  }, [vetor]);
+
+  const obter = useCallback((indice: number) => {
+    const elemento = vetor.obter(indice);
+    adicionarAoHistorico(`Obtido elemento do indice ${indice}`);
+    return elemento;
+  }, [vetor]);
+
+  const definir = useCallback((indice: number, elemento: T) => {
+    vetor.definir(indice, elemento);
+    setElementos(vetor.paraArray());
+    adicionarAoHistorico(`Definido elemento ${elemento} no indice ${indice}`);
+  }, [vetor]);
+
+  const adicionarNoFinal = useCallback((elemento: T) => {
+    vetor.adicionarNoFinal(elemento);
+    setElementos(vetor.paraArray());
+    adicionarAoHistorico(`Adicionado ${elemento} no final`);
+  }, [vetor]);
+
+  return {
+    elementos,
+    inserir,
+    remover,
+    obter,
+    definir,
+    adicionarNoFinal,
+    historico,
+    limpar: useCallback(() => {
+      vetor.limpar();
+      setElementos(vetor.paraArray());
+      adicionarAoHistorico("Vetor limpo");
+    }, [vetor]),
+    tamanho: useCallback(() => vetor.tamanho(), [vetor]),
+    estaVazio: useCallback(() => vetor.estaVazio(), [vetor]),
+  };
+}
