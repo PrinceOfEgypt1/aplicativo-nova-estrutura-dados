@@ -1,21 +1,39 @@
+// jest.config.ts
+
 import type { Config } from 'jest';
 
 const config: Config = {
-  preset: 'ts-jest', // Usar ts-jest para suportar TypeScript
-  testEnvironment: 'jsdom', // Definir jsdom como ambiente de teste
-  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'], // Configurar o arquivo de setup
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1', // Atalho para resolver caminhos com "@/"
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy' // Mock de estilos
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
-  transform: {
-    '^.+\\.tsx?$': [
-      'ts-jest',
-      {
-        tsconfig: './tsconfig.json' // Garantir uso do arquivo de configuração do TypeScript
-      }
-    ]
-  }
+  roots: ['<rootDir>/src'], // Define a pasta raiz onde o Jest procura por testes
+  testMatch: ["**/?(*.)+(spec|test).[tj]s?(x)"], // Padrão para encontrar arquivos de teste
+  testPathIgnorePatterns: [ // Ignora pastas específicas
+    "<rootDir>/backups/",
+    "/node_modules/",
+  ],
+  collectCoverageFrom: [
+    "**/*.{js,jsx,ts,tsx}",
+    "!**/node_modules/**", // exclui node modules do coverage
+    "!**/vendor/**", // exclui a pasta vendor, se houver
+    "!src/pages/*.tsx",
+    "!src/components/DataStructures/*/*.tsx",
+    "!src/constants/*.ts",
+    "!src/context/*.tsx",
+    "!src/setupTests.ts",
+    "!src/reportWebVitals.ts",
+    "!src/react-app-env.d.ts",
+    "!src/types/*.d.ts",
+    "!src/**/index.ts",
+  ],
+  coverageDirectory: './coverage', // pasta onde será gerado o coverage
+  coverageReporters: ['json', 'lcov', 'text', 'clover'], // reportes para gerar o coverage
+  collectCoverage: true,
+  reporters: [ /* ... (sem alterações) */ ],
 };
 
 export default config;

@@ -11,7 +11,14 @@ interface AppProviderProps {
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   // Hook de navegação do React Router
-  const navigate = useNavigate();
+  let navigate;
+try {
+  navigate = useNavigate();
+} catch {
+  navigate = () => {
+      console.warn("Navigation attempted outside of a Router context.");
+    };
+}
   
   // Estado para controle do tema
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
