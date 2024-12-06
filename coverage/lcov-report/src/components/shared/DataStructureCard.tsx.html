@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>0/12</span>
             </div>
         
             
@@ -99,13 +99,9 @@
 <a name='L34'></a><a href='#L34'>34</a>
 <a name='L35'></a><a href='#L35'>35</a>
 <a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -121,56 +117,63 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// src/components/shared/DataStructureCard.tsx
-import React from 'react';
-<span class="cstat-no" title="statement not covered" >import { Card } from '../ui/Card';</span>
-<span class="cstat-no" title="statement not covered" >import { CardHeader } from '../ui/Card';</span>
-<span class="cstat-no" title="statement not covered" >import { CardTitle } from '../ui/Card';</span>
-<span class="cstat-no" title="statement not covered" >import { CardDescription } from '../ui/Card';</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// src/context/DataStructureContext.tsx
+<span class="cstat-no" title="statement not covered" >import { createContext, useContext } from 'react';</span>
 &nbsp;
-interface DataStructureCardProps {
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  onClick: () =&gt; void;
+interface DataStructureContextType {
+  activeStructure: string | null;
+  setActiveStructure: (structure: string) =&gt; void;
+  isReady: boolean;
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >DataStructureCard: React.FC&lt;DataStructureCardProps&gt; = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>{</span></span>
-  title,
-  description,
-  icon,
-  onClick,
-}) =&gt; {
-<span class="cstat-no" title="statement not covered" >  return (</span>
-    &lt;Card 
-      onClick={onClick}
-      className="cursor-pointer hover:shadow-lg transition-shadow"
-    &gt;
-      &lt;CardHeader&gt;
-        &lt;div className="flex items-center gap-3"&gt;
-          {icon}
-          &lt;CardTitle&gt;{title}&lt;/CardTitle&gt;
-        &lt;/div&gt;
-        &lt;CardDescription className="mt-2"&gt;
-          {description}
-        &lt;/CardDescription&gt;
-      &lt;/CardHeader&gt;
-    &lt;/Card&gt;
-  );
+const initialState: DataStructureContextType = <span class="cstat-no" title="statement not covered" >{</span>
+  activeStructure: null,
+  setActiveStructure: <span class="fstat-no" title="function not covered" >() =</span>&gt; {},
+  isReady: false,
+};
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >DataStructureContext = createContext&lt;DataStructureContextType&gt;(initialState);</span>
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >DataStructureProvider: React.FC&lt;{}&gt; = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>{</span>}) =&gt; (</span>
+<span class="cstat-no" title="statement not covered" >  &lt;DataStructureContext.Provider value={initialState}&gt;</span>
+    {/* children */}
+  &lt;/DataStructureContext.Provider&gt;
+);
+&nbsp;
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >useDataStructure = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>) =</span>&gt; {</span>
+  const context = <span class="cstat-no" title="statement not covered" >useContext(DataStructureContext);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (!context) {</span>
+<span class="cstat-no" title="statement not covered" >    throw new Error(</span>
+      'useDataStructure must be used within a DataStructureProvider.'
+    );
+  }
+<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (!context.isReady) {</span>
+<span class="cstat-no" title="statement not covered" >    throw new Error('DataStructureContext is not ready.');</span>
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return context;</span>
 };</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -178,7 +181,7 @@ export const <span class="cstat-no" title="statement not covered" >DataStructure
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-12-03T01:03:51.123Z
+                at 2024-12-06T04:31:42.949Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

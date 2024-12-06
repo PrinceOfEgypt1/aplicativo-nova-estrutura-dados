@@ -1,37 +1,38 @@
-// src/components/shared/DataStructureCard.tsx
-import React from 'react';
-import { Card } from '../ui/Card';
-import { CardHeader } from '../ui/Card';
-import { CardTitle } from '../ui/Card';
-import { CardDescription } from '../ui/Card';
+// src/context/DataStructureContext.tsx
+import { createContext, useContext } from 'react';
 
-interface DataStructureCardProps {
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  onClick: () => void;
+interface DataStructureContextType {
+  activeStructure: string | null;
+  setActiveStructure: (structure: string) => void;
+  isReady: boolean;
 }
 
-export const DataStructureCard: React.FC<DataStructureCardProps> = ({
-  title,
-  description,
-  icon,
-  onClick,
-}) => {
-  return (
-    <Card 
-      onClick={onClick}
-      className="cursor-pointer hover:shadow-lg transition-shadow"
-    >
-      <CardHeader>
-        <div className="flex items-center gap-3">
-          {icon}
-          <CardTitle>{title}</CardTitle>
-        </div>
-        <CardDescription className="mt-2">
-          {description}
-        </CardDescription>
-      </CardHeader>
-    </Card>
-  );
+const initialState: DataStructureContextType = {
+  activeStructure: null,
+  setActiveStructure: () => {},
+  isReady: false,
+};
+
+export const DataStructureContext = createContext<DataStructureContextType>(initialState);
+
+export const DataStructureProvider: React.FC<{}> = ({}) => (
+  <DataStructureContext.Provider value={initialState}>
+    {/* children */}
+  </DataStructureContext.Provider>
+);
+
+
+export const useDataStructure = () => {
+  const context = useContext(DataStructureContext);
+
+  if (!context) {
+    throw new Error(
+      'useDataStructure must be used within a DataStructureProvider.'
+    );
+  }
+  if (!context.isReady) {
+    throw new Error('DataStructureContext is not ready.');
+  }
+
+  return context;
 };

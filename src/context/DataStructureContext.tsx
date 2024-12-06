@@ -1,52 +1,31 @@
-// src/context/DataStructureContext.tsx
-import {
-  createContext,
-  useContext,
-  ReactNode,
-  useState,
-  useEffect,
-} from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { createContext, useState, ReactNode } from 'react';  // removido useContext que não é usado
 
 interface DataStructureContextType {
   activeStructure: string | null;
-  setActiveStructure: (structure: string) => void;
+  setActiveStructure: React.Dispatch<React.SetStateAction<string | null>>;
   isReady: boolean;
+}
+
+interface DataStructureProviderProps {
+  children: ReactNode;
 }
 
 const initialState: DataStructureContextType = {
   activeStructure: null,
-  setActiveStructure: () => {
-    console.warn('DataStructureContext not initialized');
-  },
-  isReady: false,
+  setActiveStructure: () => {},
+  isReady: true,
 };
 
-export const DataStructureContext =
-  createContext<DataStructureContextType>(initialState);
+export const DataStructureContext = createContext<DataStructureContextType>(initialState);
 
-export function DataStructureProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export const DataStructureProvider: React.FC<DataStructureProviderProps> = ({ children }) => {
   const [activeStructure, setActiveStructure] = useState<string | null>(null);
-  const location = useLocation();
-
-  useEffect(() => {
-    const path = location.pathname;
-    const match = path.match(/\/estrutura\/(.+)/);
-    if (match) {
-      setActiveStructure(match[1]);
-    } else {
-      setActiveStructure(null);
-    }
-  }, [location.pathname]);
+  const [isReady] = useState(true);
 
   const value = {
     activeStructure,
     setActiveStructure,
-    isReady: true,
+    isReady,
   };
 
   return (
@@ -54,17 +33,4 @@ export function DataStructureProvider({
       {children}
     </DataStructureContext.Provider>
   );
-}
-
-export const useDataStructure = () => {
-  const context = useContext(DataStructureContext);
-  if (!context) {
-    throw new Error(
-      'useDataStructure must be used within a DataStructureProvider.'
-    );
-  }
-  if (!context.isReady) {
-    throw new Error('DataStructureContext is not ready.');
-  }
-  return context;
 };

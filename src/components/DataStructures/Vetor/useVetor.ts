@@ -219,8 +219,11 @@ export function useVetor(capacidadeInicial: number = 20) {
   const [historico, setHistorico] = useState<OperationHistory[]>([]);
 
   const registrarOperacao = useCallback((operacao: string, status: OperationState = OperationState.COMPLETED) => {
-    setHistorico(prev => [{ operacao, timestamp: Date.now(), status }, ...prev]);
-    dispatch({ type: 'SET_MENSAGEM_ACAO', payload: operacao });
+    setHistorico(prev => [{
+      operacao,
+      timestamp: Date.now(),
+      status
+    }, ...prev].slice(0, 50)); // Mantém apenas as últimas 50 operações
   }, []);
 
   const executarMetodo = useCallback(
@@ -231,8 +234,6 @@ export function useVetor(capacidadeInicial: number = 20) {
           if (!validacao.valido) throw new Error(validacao.mensagem);
           return validacao.valor!;
         };
-
-        // Removido a validação de índice daqui
 
         switch (metodo) {
           case 'inserir':

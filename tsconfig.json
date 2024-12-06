@@ -1,30 +1,30 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "types": ["jest", "node"], // Adicionado "node" para suporte ao Node.js
-    "typeRoots": ["./node_modules/@types", "./src/types"],
-    "jsx": "react-jsx",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "target": "ES2020",
+  "lib": ["ES2020", "DOM", "DOM.Iterable"],
+  "module": "ESNext",
+  "skipLibCheck": true,
+  "moduleResolution": "node",
+  "allowImportingTsExtensions": true,
+  "resolveJsonModule": true,
+  "isolatedModules": true,
+  "noEmit": true,
+  "types": ["jest", "node"], // Adicionado "node" para suporte ao Node.js
+  "typeRoots": ["./node_modules/@types", "./src/types"],
+  "jsx": "react-jsx",
+  "strict": true,
+  "noUnusedLocals": true,
+  "noUnusedParameters": true,
+  "noFallthroughCasesInSwitch": true,
+  "forceConsistentCasingInFileNames": true,
+  "useDefineForClassFields": true,
+  "esModuleInterop": true,
+  "allowSyntheticDefaultImports": true,
+  "baseUrl": ".",
+  "paths": {
+    "@/*": ["./src/*"]
+  }
+},
+"include": ["src"],
+"references": [{ "path": "./tsconfig.node.json" }]
 }
