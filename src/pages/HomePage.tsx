@@ -129,7 +129,7 @@ const itemVariants = {
 
 export const HomePage = () => {
   return (
-    <main className="h-screen overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <main className="h-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
       <PageContainer className="h-full py-6 flex flex-col">
         <motion.section
           initial={{ opacity: 0, y: -10 }}

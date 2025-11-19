@@ -6,10 +6,12 @@ import { DataStructureProvider } from './context/DataStructureContext';
 function App() {
   return (
     <DataStructureProvider>
-      <div className="min-h-screen bg-slate-950">
+      <div className="h-screen overflow-hidden bg-slate-950 flex flex-col">
         <PageHeader />
         <Breadcrumb />
-        <Outlet />
+        <div className="flex-1 min-h-0 overflow-auto">
+          <Outlet />
+        </div>
       </div>
     </DataStructureProvider>
   );

@@ -183,7 +183,7 @@ const VisualizacaoFila: React.FC = () => {
   ];
 
   return (
-    <main className="h-screen overflow-hidden bg-slate-950">
+    <main className="h-full bg-slate-950">
       <PageContainer size="wide" className="py-4 h-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 h-full">
           <div className="lg:col-span-4 space-y-3 flex flex-col overflow-auto">
