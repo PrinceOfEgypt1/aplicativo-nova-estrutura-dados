@@ -2,7 +2,11 @@
 import { motion } from 'framer-motion';
 import { useParams, Navigate } from 'react-router-dom';
 import VisualizacaoVetor from '../components/DataStructures/Vetor/VisualizacaoVetor';
-// import { DataStructureProvider } from '../context/DataStructureContext'; // Não é mais necessário
+import VisualizacaoPilha from '../components/DataStructures/Pilha/VisualizacaoPilha';
+import VisualizacaoFila from '../components/DataStructures/Fila/VisualizacaoFila';
+import VisualizacaoListaLigada from '../components/DataStructures/ListaLigada/VisualizacaoListaLigada';
+import VisualizacaoListaDupla from '../components/DataStructures/ListaDuplamenteLigada/VisualizacaoListaDupla';
+import VisualizacaoArvoreBinaria from '../components/DataStructures/ArvoreBinaria/VisualizacaoArvoreBinaria';
 
 export function StructurePage() {
   const { tipo } = useParams<{ tipo: string }>();
@@ -11,13 +15,26 @@ export function StructurePage() {
     return <Navigate to="/" replace />;
   }
 
-  if (tipo !== 'vetor') {
+  // Mapeamento de tipos para componentes
+  const componentMap: Record<string, React.ComponentType> = {
+    'vetor': VisualizacaoVetor,
+    'pilha': VisualizacaoPilha,
+    'fila': VisualizacaoFila,
+    'lista-ligada': VisualizacaoListaLigada,
+    'lista-dupla': VisualizacaoListaDupla,
+    'arvore-binaria': VisualizacaoArvoreBinaria,
+  };
+
+  const Component = componentMap[tipo];
+
+  // Se a estrutura não existe, mostrar mensagem
+  if (!Component) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="bg-slate-900 p-8 rounded-lg shadow-lg max-w-md text-center">
           <h2 className="text-xl font-bold text-white mb-4">Estrutura em Desenvolvimento</h2>
           <p className="text-gray-300 mb-6">
-            A visualização para {tipo.replace('-', ' ')} está sendo implementada. Por favor, tente
+            A visualização para {tipo.replace(/-/g, ' ')} está sendo implementada. Por favor, tente
             novamente em breve.
           </p>
           <button
@@ -38,7 +55,7 @@ export function StructurePage() {
       exit={{ opacity: 0 }}
       className="min-h-screen bg-slate-950"
     >
-      <VisualizacaoVetor />
+      <Component />
     </motion.div>
   );
 }
