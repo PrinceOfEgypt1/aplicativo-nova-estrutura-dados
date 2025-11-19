@@ -178,7 +178,6 @@ const VisualizacaoVetor: React.FC = () => {
   const {
     elementos,
     executarMetodo,
-    mensagemAcao,
     historico,
     indiceDestacado,
     capacidadeMaxima,
