@@ -5,7 +5,7 @@ import VisualizacaoListaLigada from '../components/DataStructures/ListaLigada/Vi
 import VisualizacaoListaDupla from '../components/DataStructures/ListaDuplamenteLigada/VisualizacaoListaDupla';
 import VisualizacaoFila from '../components/DataStructures/Fila/VisualizacaoFila';
 import VisualizacaoPilha from '../components/DataStructures/Pilha/VisualizacaoPilha';
-import VisualizacaoArvoreBinaria from '../components/DataStructures/ArvoreBinaria/VisualizacaoArvoreBinaria';
+import { VisualizacaoArvoreBinaria } from '../components/DataStructures/ArvoreBinaria/VisualizacaoArvoreBinaria';
 import VisualizacaoGrafo from '../components/DataStructures/Grafo/VisualizacaoGrafo';
 import VisualizacaoMatriz from '../components/DataStructures/Matriz/VisualizacaoMatriz';
 
