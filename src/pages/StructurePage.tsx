@@ -7,6 +7,7 @@ import VisualizacaoFila from '../components/DataStructures/Fila/VisualizacaoFila
 import VisualizacaoListaLigada from '../components/DataStructures/ListaLigada/VisualizacaoListaLigada';
 import VisualizacaoListaDupla from '../components/DataStructures/ListaDuplamenteLigada/VisualizacaoListaDupla';
 import VisualizacaoArvoreBinaria from '../components/DataStructures/ArvoreBinaria/VisualizacaoArvoreBinaria';
+import VisualizacaoGrafo from '../components/DataStructures/Grafo/VisualizacaoGrafo';
 
 export function StructurePage() {
   const { tipo } = useParams<{ tipo: string }>();
@@ -23,6 +24,7 @@ export function StructurePage() {
     'lista-ligada': VisualizacaoListaLigada,
     'lista-dupla': VisualizacaoListaDupla,
     'arvore-binaria': VisualizacaoArvoreBinaria,
+    'grafo': VisualizacaoGrafo,
   };
 
   const Component = componentMap[tipo];
