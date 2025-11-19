@@ -29,7 +29,7 @@ const dataStructures: DataStructure[] = [
   {
     id: 'vetor',
     name: 'Vetor',
-    description: 'Estrutura linear com elementos em posições contíguas de memória',
+    description: 'Estrutura linear com elementos em posições contíguas',
     icon: Grid,
     color: 'bg-violet-500',
     hoverColor: 'hover:bg-violet-400',
@@ -39,7 +39,7 @@ const dataStructures: DataStructure[] = [
   {
     id: 'lista-ligada',
     name: 'Lista Ligada',
-    description: 'Estrutura com nós conectados através de referências',
+    description: 'Nós conectados através de referências',
     icon: ListOrdered,
     color: 'bg-sky-500',
     hoverColor: 'hover:bg-sky-400',
@@ -48,8 +48,8 @@ const dataStructures: DataStructure[] = [
   },
   {
     id: 'lista-dupla',
-    name: 'Lista Duplamente Ligada',
-    description: 'Lista com referências para o próximo e anterior',
+    name: 'Lista Dupla',
+    description: 'Referências para próximo e anterior',
     icon: Database,
     color: 'bg-emerald-500',
     hoverColor: 'hover:bg-emerald-400',
@@ -59,7 +59,7 @@ const dataStructures: DataStructure[] = [
   {
     id: 'fila',
     name: 'Fila',
-    description: 'Estrutura FIFO (First In, First Out) para gerenciamento',
+    description: 'FIFO - First In, First Out',
     icon: LayoutList,
     color: 'bg-amber-500',
     hoverColor: 'hover:bg-amber-400',
@@ -69,7 +69,7 @@ const dataStructures: DataStructure[] = [
   {
     id: 'pilha',
     name: 'Pilha',
-    description: 'Estrutura LIFO (Last In, First Out) para processamento',
+    description: 'LIFO - Last In, First Out',
     icon: Component,
     color: 'bg-rose-500',
     hoverColor: 'hover:bg-rose-400',
@@ -79,7 +79,7 @@ const dataStructures: DataStructure[] = [
   {
     id: 'arvore',
     name: 'Árvore Binária',
-    description: 'Estrutura hierárquica com no máximo dois filhos por nó',
+    description: 'Estrutura hierárquica com dois filhos',
     icon: Network,
     color: 'bg-indigo-500',
     hoverColor: 'hover:bg-indigo-400',
@@ -89,7 +89,7 @@ const dataStructures: DataStructure[] = [
   {
     id: 'grafo',
     name: 'Grafo',
-    description: 'Conjunto de vértices e arestas para modelagem de relações',
+    description: 'Vértices e arestas para relações',
     icon: CircuitBoard,
     color: 'bg-cyan-500',
     hoverColor: 'hover:bg-cyan-400',
@@ -99,7 +99,7 @@ const dataStructures: DataStructure[] = [
   {
     id: 'matriz',
     name: 'Matriz',
-    description: 'Estrutura bidimensional para organização de dados em linhas e colunas',
+    description: 'Dados organizados em linhas e colunas',
     icon: Grid,
     color: 'bg-purple-500',
     hoverColor: 'hover:bg-purple-400',
@@ -113,84 +113,71 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
+      staggerChildren: 0.05
     }
   }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5 }
+    transition: { duration: 0.3 }
   }
 };
 
 export const HomePage = () => {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-      <PageContainer className="py-12 space-y-16">
+    <main className="h-screen overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+      <PageContainer className="h-full py-6 flex flex-col">
         <motion.section
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="text-center space-y-6"
+          transition={{ duration: 0.5 }}
+          className="text-center space-y-3 flex-shrink-0"
         >
-          <div className="space-y-4">
-            <div className="flex justify-center">
-              <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 rounded-full px-4 py-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
-                </span>
-                <span className="text-sm text-violet-300 font-medium">
-                  Plataforma de Aprendizado Interativa
-                </span>
-              </div>
-            </div>
-
-            <h2 className="text-5xl sm:text-6xl font-bold text-white tracking-tight">
+          <div className="space-y-2">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
               Aprenda Estruturas de Dados
-              <span className="block mt-2 bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
+              <span className="block mt-1 bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
                 de Forma Visual
               </span>
             </h2>
 
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-              Explore, manipule e visualize estruturas de dados fundamentais da computação.
-              Entenda como funcionam através de operações interativas em tempo real.
+            <p className="text-base text-slate-300 max-w-2xl mx-auto">
+              Explore e visualize estruturas de dados fundamentais através de operações interativas.
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-6 justify-center items-center pt-4">
-            <div className="flex items-center gap-2 text-slate-400">
-              <CheckCircle2 className="h-5 w-5 text-emerald-500" aria-hidden="true" />
+          <div className="flex flex-wrap gap-4 justify-center items-center">
+            <div className="flex items-center gap-1.5 text-sm text-slate-400">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" aria-hidden="true" />
               <span>100% Gratuito</span>
             </div>
-            <div className="flex items-center gap-2 text-slate-400">
-              <CheckCircle2 className="h-5 w-5 text-emerald-500" aria-hidden="true" />
+            <div className="flex items-center gap-1.5 text-sm text-slate-400">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" aria-hidden="true" />
               <span>Aprenda Fazendo</span>
             </div>
-            <div className="flex items-center gap-2 text-slate-400">
-              <CheckCircle2 className="h-5 w-5 text-emerald-500" aria-hidden="true" />
-              <span>Visualização em Tempo Real</span>
+            <div className="flex items-center gap-1.5 text-sm text-slate-400">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" aria-hidden="true" />
+              <span>Tempo Real</span>
             </div>
           </div>
         </motion.section>
 
-        <section>
+        <section className="flex-1 flex flex-col min-h-0 mt-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mb-8"
+            transition={{ delay: 0.2 }}
+            className="mb-4 flex-shrink-0"
           >
-            <h3 className="text-2xl font-semibold text-white mb-2">
+            <h3 className="text-xl font-semibold text-white mb-1">
               Escolha uma Estrutura de Dados
             </h3>
-            <p className="text-slate-400">
-              Clique em qualquer estrutura para começar a explorar e experimentar
+            <p className="text-sm text-slate-400">
+              Clique para começar a explorar
             </p>
           </motion.div>
 
@@ -198,13 +185,13 @@ export const HomePage = () => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-1 min-h-0"
           >
             {dataStructures.map((structure) => {
               const Icon = structure.icon;
 
               return (
-                <motion.div key={structure.id} variants={itemVariants}>
+                <motion.div key={structure.id} variants={itemVariants} className="h-full">
                   <Link
                     to={structure.route}
                     className={`block h-full group ${!structure.available ? 'pointer-events-none' : ''}`}
@@ -214,32 +201,32 @@ export const HomePage = () => {
                       className={`${structure.color} ${structure.available ? structure.hoverColor : ''}
                         transition-all duration-300 cursor-pointer h-full border-0
                         ${structure.available ? 'hover:scale-105 hover:shadow-2xl' : 'opacity-60 cursor-not-allowed'}
-                        relative overflow-hidden
+                        relative overflow-hidden flex flex-col
                       `}
                     >
                       {!structure.available && (
-                        <div className="absolute top-3 right-3 bg-slate-900/80 text-xs font-medium text-slate-300 px-2 py-1 rounded-full border border-slate-700">
+                        <div className="absolute top-2 right-2 bg-slate-900/80 text-xs font-medium text-slate-300 px-2 py-1 rounded-full border border-slate-700">
                           Em breve
                         </div>
                       )}
 
-                      <CardHeader className="relative z-10">
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="p-2 bg-white/10 backdrop-blur-sm rounded-lg">
-                            <Icon className="h-6 w-6 text-white" aria-hidden="true" />
+                      <CardHeader className="relative z-10 p-4 flex-1 flex flex-col">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="p-1.5 bg-white/10 backdrop-blur-sm rounded-lg">
+                            <Icon className="h-5 w-5 text-white" aria-hidden="true" />
                           </div>
-                          <CardTitle className="text-white text-xl">
+                          <CardTitle className="text-white text-base font-semibold">
                             {structure.name}
                           </CardTitle>
                         </div>
-                        <CardDescription className="text-white/90 text-base">
+                        <CardDescription className="text-white/90 text-sm flex-1">
                           {structure.description}
                         </CardDescription>
 
                         {structure.available && (
-                          <div className="flex items-center gap-2 text-white/80 text-sm font-medium mt-4 group-hover:gap-3 transition-all">
-                            <span>Explorar agora</span>
-                            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                          <div className="flex items-center gap-1 text-white/80 text-xs font-medium mt-2 group-hover:gap-2 transition-all">
+                            <span>Explorar</span>
+                            <ArrowRight className="h-3 w-3" aria-hidden="true" />
                           </div>
                         )}
                       </CardHeader>
@@ -252,25 +239,6 @@ export const HomePage = () => {
             })}
           </motion.div>
         </section>
-
-        <motion.section
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-8 backdrop-blur-sm"
-        >
-          <div className="max-w-3xl mx-auto text-center space-y-4">
-            <h3 className="text-2xl font-semibold text-white">
-              Como funciona?
-            </h3>
-            <p className="text-slate-300 leading-relaxed">
-              Cada estrutura de dados possui um conjunto de operações que você pode executar.
-              Escolha uma operação, forneça os parâmetros necessários e visualize em tempo real
-              como a estrutura se modifica. Perfeito para estudantes, desenvolvedores e
-              qualquer pessoa interessada em aprender sobre estruturas de dados.
-            </p>
-          </div>
-        </motion.section>
       </PageContainer>
     </main>
   );

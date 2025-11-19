@@ -250,27 +250,27 @@ const VisualizacaoMatriz: React.FC = () => {
   ];
 
   return (
-    <main className="min-h-screen bg-slate-950">
-      <PageContainer size="wide" className="py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-4 space-y-6">
-            <div className="bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl p-6 text-white shadow-xl">
-              <div className="flex items-center gap-3 mb-3">
-                <Grid className="h-6 w-6" />
-                <h1 className="text-2xl font-bold">Matriz</h1>
+    <main className="h-screen overflow-hidden bg-slate-950">
+      <PageContainer size="wide" className="py-4 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 h-full">
+          <div className="lg:col-span-4 space-y-3 flex flex-col overflow-auto">
+            <div className="bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl p-4 text-white shadow-xl flex-shrink-0">
+              <div className="flex items-center gap-2 mb-2">
+                <Grid className="h-5 w-5" />
+                <h1 className="text-xl font-bold">Matriz</h1>
               </div>
-              <p className="text-white/90">
+              <p className="text-white/90 text-sm">
                 Estrutura bidimensional de dados
               </p>
-              <div className="mt-4 pt-4 border-t border-white/20">
-                <p className="text-sm text-white/80">
+              <div className="mt-2 pt-2 border-t border-white/20">
+                <p className="text-xs text-white/80">
                   <strong>{metodos.length} operações</strong> disponíveis
                 </p>
               </div>
             </div>
 
-            <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-lg font-semibold text-white mb-4">Informações</h2>
+            <div className="bg-slate-800 rounded-xl p-4 border border-slate-700 flex-shrink-0">
+              <h2 className="text-base font-semibold text-white mb-3">Informações</h2>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-slate-400">Linhas:</span>
@@ -291,11 +291,11 @@ const VisualizacaoMatriz: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
-              <div className="p-4 border-b border-slate-700">
-                <h2 className="text-lg font-semibold text-white">Operações</h2>
+            <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden flex-1 flex flex-col min-h-0">
+              <div className="p-3 border-b border-slate-700 flex-shrink-0">
+                <h2 className="text-base font-semibold text-white">Operações</h2>
               </div>
-              <div className="p-2 space-y-1 max-h-96 overflow-y-auto">
+              <div className="p-2 space-y-1 overflow-y-auto flex-1">
                 {metodos.map(metodo => {
                   const Icon = metodo.icon;
                   return (
@@ -317,8 +317,8 @@ const VisualizacaoMatriz: React.FC = () => {
             </div>
 
             {metodoSelecionado && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-                <h3 className="text-white font-semibold mb-4">{metodos.find(m => m.id === metodoSelecionado)?.nome}</h3>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-slate-800 rounded-xl p-4 border border-slate-700 flex-shrink-0">
+                <h3 className="text-white text-sm font-semibold mb-3">{metodos.find(m => m.id === metodoSelecionado)?.nome}</h3>
                 <div className="space-y-4">
                   {metodos.find(m => m.id === metodoSelecionado)?.requer.includes('linhas') && (
                     <div>
@@ -388,10 +388,10 @@ const VisualizacaoMatriz: React.FC = () => {
             )}
           </div>
 
-          <div className="lg:col-span-8 space-y-6">
-            <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-lg font-semibold text-white mb-4">Visualização da Matriz</h2>
-              <div className="bg-slate-900 rounded-lg p-6 min-h-[400px] flex items-center justify-center overflow-auto">
+          <div className="lg:col-span-8 flex flex-col h-full min-h-0">
+            <div className="bg-slate-800 rounded-xl p-4 border border-slate-700 flex-1 flex flex-col min-h-0">
+              <h2 className="text-base font-semibold text-white mb-3 flex-shrink-0">Visualização da Matriz</h2>
+              <div className="bg-slate-900 rounded-lg p-4 flex-1 flex items-center justify-center overflow-auto">
                 {matriz.length > 0 ? (
                   <div className="inline-block">
                     <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${matriz[0].length}, minmax(0, 1fr))` }}>
