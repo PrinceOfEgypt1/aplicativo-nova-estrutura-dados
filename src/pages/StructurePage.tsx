@@ -1,8 +1,13 @@
-// src/pages/StructurePage.tsx
 import { motion } from 'framer-motion';
 import { useParams, Navigate } from 'react-router-dom';
 import VisualizacaoVetor from '../components/DataStructures/Vetor/VisualizacaoVetor';
-// import { DataStructureProvider } from '../context/DataStructureContext'; // Não é mais necessário
+import VisualizacaoListaLigada from '../components/DataStructures/ListaLigada/VisualizacaoListaLigada';
+import VisualizacaoListaDupla from '../components/DataStructures/ListaDuplamenteLigada/VisualizacaoListaDupla';
+import VisualizacaoFila from '../components/DataStructures/Fila/VisualizacaoFila';
+import VisualizacaoPilha from '../components/DataStructures/Pilha/VisualizacaoPilha';
+import VisualizacaoArvoreBinaria from '../components/DataStructures/ArvoreBinaria/VisualizacaoArvoreBinaria';
+import VisualizacaoGrafo from '../components/DataStructures/Grafo/VisualizacaoGrafo';
+import VisualizacaoMatriz from '../components/DataStructures/Matriz/VisualizacaoMatriz';
 
 export function StructurePage() {
   const { tipo } = useParams<{ tipo: string }>();
@@ -11,25 +16,28 @@ export function StructurePage() {
     return <Navigate to="/" replace />;
   }
 
-  if (tipo !== 'vetor') {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="bg-slate-900 p-8 rounded-lg shadow-lg max-w-md text-center">
-          <h2 className="text-xl font-bold text-white mb-4">Estrutura em Desenvolvimento</h2>
-          <p className="text-gray-300 mb-6">
-            A visualização para {tipo.replace('-', ' ')} está sendo implementada. Por favor, tente
-            novamente em breve.
-          </p>
-          <button
-            onClick={() => window.history.back()}
-            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors"
-          >
-            Voltar
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const renderVisualizacao = () => {
+    switch (tipo) {
+      case 'vetor':
+        return <VisualizacaoVetor />;
+      case 'lista-ligada':
+        return <VisualizacaoListaLigada />;
+      case 'lista-dupla':
+        return <VisualizacaoListaDupla />;
+      case 'fila':
+        return <VisualizacaoFila />;
+      case 'pilha':
+        return <VisualizacaoPilha />;
+      case 'arvore-binaria':
+        return <VisualizacaoArvoreBinaria />;
+      case 'grafo':
+        return <VisualizacaoGrafo />;
+      case 'matriz':
+        return <VisualizacaoMatriz />;
+      default:
+        return <Navigate to="/" replace />;
+    }
+  };
 
   return (
     <motion.div
@@ -38,7 +46,7 @@ export function StructurePage() {
       exit={{ opacity: 0 }}
       className="min-h-screen bg-slate-950"
     >
-      <VisualizacaoVetor />
+      {renderVisualizacao()}
     </motion.div>
   );
 }

@@ -43,7 +43,7 @@ const dataStructures: DataStructure[] = [
     icon: ListOrdered,
     color: 'bg-sky-500',
     hoverColor: 'hover:bg-sky-400',
-    available: false,
+    available: true,
     route: '/estrutura/lista-ligada'
   },
   {
@@ -53,7 +53,7 @@ const dataStructures: DataStructure[] = [
     icon: Database,
     color: 'bg-emerald-500',
     hoverColor: 'hover:bg-emerald-400',
-    available: false,
+    available: true,
     route: '/estrutura/lista-dupla'
   },
   {
@@ -63,7 +63,7 @@ const dataStructures: DataStructure[] = [
     icon: LayoutList,
     color: 'bg-amber-500',
     hoverColor: 'hover:bg-amber-400',
-    available: false,
+    available: true,
     route: '/estrutura/fila'
   },
   {
@@ -73,7 +73,7 @@ const dataStructures: DataStructure[] = [
     icon: Component,
     color: 'bg-rose-500',
     hoverColor: 'hover:bg-rose-400',
-    available: false,
+    available: true,
     route: '/estrutura/pilha'
   },
   {
@@ -83,7 +83,7 @@ const dataStructures: DataStructure[] = [
     icon: Network,
     color: 'bg-indigo-500',
     hoverColor: 'hover:bg-indigo-400',
-    available: false,
+    available: true,
     route: '/estrutura/arvore-binaria'
   },
   {
@@ -93,8 +93,18 @@ const dataStructures: DataStructure[] = [
     icon: CircuitBoard,
     color: 'bg-cyan-500',
     hoverColor: 'hover:bg-cyan-400',
-    available: false,
+    available: true,
     route: '/estrutura/grafo'
+  },
+  {
+    id: 'matriz',
+    name: 'Matriz',
+    description: 'Estrutura bidimensional para organização de dados em linhas e colunas',
+    icon: Grid,
+    color: 'bg-purple-500',
+    hoverColor: 'hover:bg-purple-400',
+    available: true,
+    route: '/estrutura/matriz'
   }
 ];
 
