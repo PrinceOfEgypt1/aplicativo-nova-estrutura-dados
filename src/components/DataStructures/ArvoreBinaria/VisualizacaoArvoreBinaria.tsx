@@ -115,3 +115,5 @@ export const VisualizacaoArvoreBinaria: React.FC<VisualizacaoArvoreBinariaProps>
     </div>
   );
 };
+
+export default VisualizacaoArvoreBinaria;
