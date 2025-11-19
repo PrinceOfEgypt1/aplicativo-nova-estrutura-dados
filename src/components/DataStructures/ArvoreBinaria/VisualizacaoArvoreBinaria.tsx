@@ -4,9 +4,9 @@ import { Network } from 'lucide-react';
 
 export default function VisualizacaoArvoreBinaria() {
   return (
-    <main className="min-h-screen bg-slate-950 py-12">
-      <PageContainer>
-        <div className="bg-slate-800 rounded-xl p-12 border border-slate-700">
+    <main className="h-full bg-slate-950">
+      <PageContainer className="py-4 h-full flex items-center justify-center">
+        <div className="bg-slate-800 rounded-xl p-8 border border-slate-700">
           <EmptyState
             icon={Network}
             title="Árvore Binária - Em Desenvolvimento"

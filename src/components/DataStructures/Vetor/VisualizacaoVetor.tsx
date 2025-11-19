@@ -269,29 +269,29 @@ const VisualizacaoVetor: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950">
-      <PageContainer size="wide" className="py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-4 space-y-6">
-            <div className="bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl p-6 text-white shadow-xl">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 bg-white/20 rounded-lg">
-                  <Box className="h-6 w-6" aria-hidden="true" />
+    <main className="h-full bg-slate-950">
+      <PageContainer size="wide" className="py-4 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 h-full">
+          <div className="lg:col-span-4 space-y-3 flex flex-col overflow-auto">
+            <div className="bg-gradient-to-br from-violet-500 to-indigo-600 rounded-xl p-4 text-white shadow-xl flex-shrink-0">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="p-1.5 bg-white/20 rounded-lg">
+                  <Box className="h-5 w-5" aria-hidden="true" />
                 </div>
-                <h1 className="text-2xl font-bold">Vetor</h1>
+                <h1 className="text-xl font-bold">Vetor</h1>
               </div>
-              <p className="text-white/90">
-                Estrutura linear com elementos em posições contíguas de memória
+              <p className="text-white/90 text-sm">
+                Estrutura linear com elementos contíguos
               </p>
-              <div className="mt-4 pt-4 border-t border-white/20">
-                <p className="text-sm text-white/80">
+              <div className="mt-2 pt-2 border-t border-white/20">
+                <p className="text-xs text-white/80">
                   <strong>{metodosDisponiveis.length} operações</strong> disponíveis
                 </p>
               </div>
             </div>
 
-            <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-lg font-semibold text-white mb-4">Informações</h2>
+            <div className="bg-slate-800 rounded-xl p-4 border border-slate-700 flex-shrink-0">
+              <h2 className="text-base font-semibold text-white mb-3">Informações</h2>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-slate-400">Tamanho atual:</span>
@@ -314,12 +314,12 @@ const VisualizacaoVetor: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
-              <div className="p-4 border-b border-slate-700">
-                <h2 className="text-lg font-semibold text-white">Operações</h2>
+            <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden flex-1 flex flex-col min-h-0">
+              <div className="p-3 border-b border-slate-700 flex-shrink-0">
+                <h2 className="text-base font-semibold text-white">Operações</h2>
               </div>
 
-              <div className="divide-y divide-slate-700">
+              <div className="divide-y divide-slate-700 overflow-y-auto flex-1">
                 {Object.entries(categorias).map(([key, config]) => {
                   const metodosDaCategoria = metodosDisponiveis.filter(m => m.categoria === key);
                   const CategIcon = config.icon;
@@ -393,10 +393,10 @@ const VisualizacaoVetor: React.FC = () => {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800 rounded-xl p-6 border border-slate-700"
+                className="bg-slate-800 rounded-xl p-4 border border-slate-700 flex-shrink-0"
               >
-                <h3 className="text-white font-semibold mb-3">{metodoSelecionado.titulo}</h3>
-                <p className="text-slate-400 text-sm mb-4">{metodoSelecionado.mensagemExplicativa}</p>
+                <h3 className="text-white text-sm font-semibold mb-2">{metodoSelecionado.titulo}</h3>
+                <p className="text-slate-400 text-xs mb-3">{metodoSelecionado.mensagemExplicativa}</p>
 
                 <form onSubmit={executar} className="space-y-4">
                   {metodoSelecionado.requisitos.includes('valor') && (
@@ -460,11 +460,11 @@ const VisualizacaoVetor: React.FC = () => {
             )}
           </div>
 
-          <div className="lg:col-span-8 space-y-6">
-            <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-lg font-semibold text-white mb-4">Visualização do Vetor</h2>
+          <div className="lg:col-span-8 flex flex-col h-full min-h-0 space-y-3">
+            <div className="bg-slate-800 rounded-xl p-4 border border-slate-700 flex-1 flex flex-col min-h-0">
+              <h2 className="text-base font-semibold text-white mb-3 flex-shrink-0">Visualização do Vetor</h2>
 
-              <div className="bg-slate-900 rounded-lg p-6 min-h-[120px] overflow-x-auto">
+              <div className="bg-slate-900 rounded-lg p-4 flex-1 flex items-center overflow-x-auto">
                 {elementos.length > 0 ? (
                   <ul className="flex gap-2 min-w-min" role="list">
                     {Array.from({ length: capacidadeMaxima }).map((_, index) => (
@@ -486,10 +486,10 @@ const VisualizacaoVetor: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-lg font-semibold text-white mb-4">Histórico de Operações</h2>
+            <div className="bg-slate-800 rounded-xl p-4 border border-slate-700 flex-shrink-0">
+              <h2 className="text-base font-semibold text-white mb-3">Histórico de Operações</h2>
 
-              <div className="space-y-2 max-h-[300px] overflow-y-auto">
+              <div className="space-y-2 max-h-[200px] overflow-y-auto">
                 {historico.length > 0 ? (
                   historico.slice(-10).reverse().map((op, index) => (
                     <motion.div
