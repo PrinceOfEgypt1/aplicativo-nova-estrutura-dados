@@ -1,21 +1,180 @@
-// src/components/DataStructures/Vetor/VisualizacaoVetor.tsx
 import * as React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useVetor } from './useVetor';
 import VectorCell from './VectorCell';
-import { useNavigate } from 'react-router-dom';
-import { ChevronLeft } from 'lucide-react';
 import { Button } from '../../ui/Button';
+import { Toast, ToastType } from '../../ui/Toast';
+import { EmptyState } from '../../shared/EmptyState';
+import { PageContainer } from '../../shared/PageContainer';
+import {
+  ArrowDownCircle,
+  Trash2,
+  Search,
+  Eye,
+  Edit,
+  Ruler,
+  HelpCircle,
+  Eraser,
+  BarChart3,
+  RotateCcw,
+  Plus,
+  FileSpreadsheet,
+  Minus,
+  Scissors,
+  Target,
+  Hash,
+  Box,
+  Activity
+} from 'lucide-react';
 
 interface MetodoVetor {
   id: string;
   titulo: string;
-  icone: string;
+  icon: React.ElementType;
   requisitos: string[];
   mensagemExplicativa: string;
+  categoria: 'insercao' | 'remocao' | 'consulta' | 'transformacao';
 }
 
+const metodosDisponiveis: MetodoVetor[] = [
+  {
+    id: 'inserir',
+    titulo: 'Inserir em Posição',
+    icon: ArrowDownCircle,
+    requisitos: ['valor', 'indice'],
+    mensagemExplicativa: 'Insira um valor em uma posição específica do vetor',
+    categoria: 'insercao'
+  },
+  {
+    id: 'adicionarNoFinal',
+    titulo: 'Adicionar no Final',
+    icon: Plus,
+    requisitos: ['valor'],
+    mensagemExplicativa: 'Adicione um valor ao final do vetor',
+    categoria: 'insercao'
+  },
+  {
+    id: 'estender',
+    titulo: 'Estender Vetor',
+    icon: FileSpreadsheet,
+    requisitos: ['valor'],
+    mensagemExplicativa: 'Adicione múltiplos valores separados por vírgula (ex: 1,2,3)',
+    categoria: 'insercao'
+  },
+  {
+    id: 'remover',
+    titulo: 'Remover Posição',
+    icon: Trash2,
+    requisitos: ['indice'],
+    mensagemExplicativa: 'Remova o elemento de uma posição específica',
+    categoria: 'remocao'
+  },
+  {
+    id: 'removerDoFinal',
+    titulo: 'Remover do Final',
+    icon: Minus,
+    requisitos: [],
+    mensagemExplicativa: 'Remova o último elemento do vetor',
+    categoria: 'remocao'
+  },
+  {
+    id: 'limpar',
+    titulo: 'Limpar Vetor',
+    icon: Eraser,
+    requisitos: [],
+    mensagemExplicativa: 'Remove todos os elementos do vetor',
+    categoria: 'remocao'
+  },
+  {
+    id: 'buscar',
+    titulo: 'Buscar Valor',
+    icon: Search,
+    requisitos: ['valor'],
+    mensagemExplicativa: 'Busque um valor no vetor',
+    categoria: 'consulta'
+  },
+  {
+    id: 'obterElemento',
+    titulo: 'Obter Elemento',
+    icon: Eye,
+    requisitos: ['indice'],
+    mensagemExplicativa: 'Obtenha o elemento de uma posição',
+    categoria: 'consulta'
+  },
+  {
+    id: 'contem',
+    titulo: 'Contém Valor',
+    icon: Target,
+    requisitos: ['valor'],
+    mensagemExplicativa: 'Verifique se o vetor contém um valor',
+    categoria: 'consulta'
+  },
+  {
+    id: 'indiceDe',
+    titulo: 'Índice do Valor',
+    icon: Hash,
+    requisitos: ['valor'],
+    mensagemExplicativa: 'Encontre o índice de um valor',
+    categoria: 'consulta'
+  },
+  {
+    id: 'tamanho',
+    titulo: 'Ver Tamanho',
+    icon: Ruler,
+    requisitos: [],
+    mensagemExplicativa: 'Veja quantos elementos existem no vetor',
+    categoria: 'consulta'
+  },
+  {
+    id: 'estaVazio',
+    titulo: 'Está Vazio?',
+    icon: HelpCircle,
+    requisitos: [],
+    mensagemExplicativa: 'Verifique se o vetor está vazio',
+    categoria: 'consulta'
+  },
+  {
+    id: 'definirElemento',
+    titulo: 'Substituir Valor',
+    icon: Edit,
+    requisitos: ['valor', 'indice'],
+    mensagemExplicativa: 'Substitua o valor de uma posição específica',
+    categoria: 'transformacao'
+  },
+  {
+    id: 'ordenar',
+    titulo: 'Ordenar',
+    icon: BarChart3,
+    requisitos: [],
+    mensagemExplicativa: 'Ordene os elementos em ordem crescente',
+    categoria: 'transformacao'
+  },
+  {
+    id: 'inverter',
+    titulo: 'Inverter',
+    icon: RotateCcw,
+    requisitos: [],
+    mensagemExplicativa: 'Inverta a ordem dos elementos',
+    categoria: 'transformacao'
+  },
+  {
+    id: 'fatiar',
+    titulo: 'Fatiar',
+    icon: Scissors,
+    requisitos: ['indice', 'indiceSecundario'],
+    mensagemExplicativa: 'Extraia uma parte do vetor (início e fim)',
+    categoria: 'transformacao'
+  }
+];
+
+const categorias = {
+  insercao: { titulo: 'Inserção', icon: ArrowDownCircle, cor: 'violet' },
+  remocao: { titulo: 'Remoção', icon: Trash2, cor: 'red' },
+  consulta: { titulo: 'Consulta', icon: Search, cor: 'cyan' },
+  transformacao: { titulo: 'Transformação', icon: Activity, cor: 'amber' }
+};
+
 const VisualizacaoVetor: React.FC = () => {
-  const navigate = useNavigate();
   const {
     elementos,
     executarMetodo,
@@ -24,209 +183,39 @@ const VisualizacaoVetor: React.FC = () => {
     indiceDestacado,
     capacidadeMaxima,
     setIndiceDestacado,
-    setMensagemAcao,
-    registrarOperacao,
+    setMensagemAcao
   } = useVetor();
 
   const [metodoAtual, setMetodoAtual] = React.useState<string | null>(null);
+  const [categoriaAberta, setCategoriaAberta] = React.useState<string | null>('insercao');
   const [valor, setValor] = React.useState('');
   const [indice, setIndice] = React.useState('');
   const [indiceSecundario, setIndiceSecundario] = React.useState('');
+  const [toastVisible, setToastVisible] = React.useState(false);
+  const [toastMessage, setToastMessage] = React.useState('');
+  const [toastType, setToastType] = React.useState<ToastType>('success');
 
-  const capacidade = capacidadeMaxima;
-  const metodosDisponiveis: MetodoVetor[] = [
-    {
-      id: 'inserir',
-      titulo: 'Inserir',
-      icone: '⬇',
-      requisitos: ['valor', 'indice'],
-      mensagemExplicativa:
-        'Insira o valor (número inteiro) e a posição onde deseja inserir o elemento no vetor.',
-    },
-    {
-      id: 'remover',
-      titulo: 'Remover',
-      icone: '🗑',
-      requisitos: ['indice'],
-      mensagemExplicativa:
-        'Digite a posição do elemento que deseja remover do vetor.',
-    },
-    {
-      id: 'buscar',
-      titulo: 'Buscar',
-      icone: '🔍',
-      requisitos: ['valor'],
-      mensagemExplicativa:
-        'Digite o valor (número inteiro) que deseja buscar no vetor.',
-    },
-    {
-      id: 'obterElemento',
-      titulo: 'Obter Elemento',
-      icone: '👁',
-      requisitos: ['indice'],
-      mensagemExplicativa:
-        'Digite o índice do elemento que deseja obter.',
-    },
-    {
-      id: 'definirElemento',
-      titulo: 'Definir Elemento',
-      icone: '✏️',
-      requisitos: ['valor', 'indice'],
-      mensagemExplicativa:
-        'Informe o índice e o novo valor (número inteiro) que substituirá o elemento.',
-    },
-    {
-      id: 'tamanho',
-      titulo: 'Tamanho',
-      icone: '📏',
-      requisitos: [],
-      mensagemExplicativa: 'Clique para ver o tamanho do vetor.',
-    },
-    {
-      id: 'estaVazio',
-      titulo: 'Está Vazio',
-      icone: '❓',
-      requisitos: [],
-      mensagemExplicativa: 'Clique para verificar se o vetor está vazio.',
-    },
-    {
-      id: 'limpar',
-      titulo: 'Limpar',
-      icone: '🧹',
-      requisitos: [],
-      mensagemExplicativa: 'Clique para limpar (remover) todos os elementos do vetor.',
-    },
-    {
-      id: 'ordenar',
-      titulo: 'Ordenar',
-      icone: '📊',
-      requisitos: [],
-      mensagemExplicativa: 'Clique para ordenar os elementos do vetor.',
-    },
-    {
-      id: 'inverter',
-      titulo: 'Inverter',
-      icone: '🔄',
-      requisitos: [],
-      mensagemExplicativa: 'Clique para inverter a ordem dos elementos do vetor.',
-    },
-    {
-      id: 'adicionarNoFinal',
-      titulo: 'Adicionar no Final',
-      icone: '➕',
-      requisitos: ['valor'],
-      mensagemExplicativa:
-        'Insira o valor (número inteiro) que deseja adicionar no final do vetor.',
-    },
-    {
-      id: 'estender',
-      titulo: 'Estender',
-      icone: '📑',
-      requisitos: ['valor'],
-      mensagemExplicativa:
-        'Digite os valores (números inteiros) separados por vírgula.',
-    },
-    {
-      id: 'removerDoFinal',
-      titulo: 'Remover do Final',
-      icone: '⛔',
-      requisitos: [],
-      mensagemExplicativa: 'Clique para remover o último elemento do vetor.',
-    },
-    {
-      id: 'fatiar',
-      titulo: 'Fatiar',
-      icone: '✂️',
-      requisitos: ['indice', 'indiceSecundario'],
-      mensagemExplicativa: 'Digite o índice inicial e final para fatiar.',
-    },
-    {
-      id: 'contem',
-      titulo: 'Contém',
-      icone: '🎯',
-      requisitos: ['valor'],
-      mensagemExplicativa:
-        'Digite o valor (número inteiro) que deseja verificar se ele está contido no vetor.',
-    },
-    {
-      id: 'indiceDe',
-      titulo: 'Índice De',
-      icone: '🔢',
-      requisitos: ['valor'],
-      mensagemExplicativa:
-        'Digite o valor (número inteiro) para localização do índice dele no vetor.',
-    },
-  ];
+  const metodoSelecionado = metodosDisponiveis.find(m => m.id === metodoAtual);
 
   const executar = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const metodoInfo = metodosDisponiveis.find(m => m.id === metodoAtual);
-      if (!metodoInfo) return;
 
+    if (!metodoSelecionado) return;
+
+    try {
       await executarMetodo(metodoAtual!, valor, indice, indiceSecundario);
 
-      let mensagemSucesso = '';
-      switch (metodoAtual) {
-        case 'inserir':
-          mensagemSucesso = `Elemento ${valor} inserido na posição ${indice}`;
-          break;
-        case 'remover':
-          mensagemSucesso = `Elemento removido da posição ${indice}`;
-          break;
-        case 'buscar':
-          mensagemSucesso = `Busca realizada pelo elemento ${valor}`;
-          break;
-        case 'obterElemento':
-          mensagemSucesso = `Elemento obtido da posição ${indice}`;
-          break;
-        case 'definirElemento':
-          mensagemSucesso = `Elemento ${valor} definido na posição ${indice}`;
-          break;
-        case 'tamanho':
-          mensagemSucesso = 'Tamanho do vetor consultado';
-          break;
-        case 'estaVazio':
-          mensagemSucesso = 'Verificação de vetor vazio realizada';
-          break;
-        case 'limpar':
-          mensagemSucesso = 'Vetor limpo com sucesso';
-          break;
-        case 'ordenar':
-          mensagemSucesso = 'Vetor ordenado com sucesso';
-          break;
-        case 'inverter':
-          mensagemSucesso = 'Vetor invertido com sucesso';
-          break;
-        case 'adicionarNoFinal':
-          mensagemSucesso = `Elemento ${valor} adicionado ao final do vetor`;
-          break;
-        case 'estender':
-          mensagemSucesso = `Elementos [${valor}] adicionados ao vetor`;
-          break;
-        case 'removerDoFinal':
-          mensagemSucesso = 'Elemento removido do final do vetor';
-          break;
-        case 'fatiar':
-          mensagemSucesso = `Vetor fatiado do índice ${indice} até ${indiceSecundario}`;
-          break;
-        case 'contem':
-          mensagemSucesso = `Verificação de existência do elemento ${valor} realizada`;
-          break;
-        case 'indiceDe':
-          mensagemSucesso = `Busca do índice do elemento ${valor} realizada`;
-          break;
-        default:
-          mensagemSucesso = 'Operação realizada com sucesso';
-      }
+      const mensagemSucesso = obterMensagemSucesso(metodoAtual!, valor, indice, indiceSecundario);
 
-      registrarOperacao(mensagemSucesso);
-      setMensagemAcao(mensagemSucesso);
+      setToastMessage(mensagemSucesso);
+      setToastType('success');
+      setToastVisible(true);
+      setMensagemAcao(null);
 
       setValor('');
       setIndice('');
       setIndiceSecundario('');
-      
+
       setTimeout(() => {
         setIndiceDestacado(null);
       }, 1500);
@@ -234,139 +223,307 @@ const VisualizacaoVetor: React.FC = () => {
     } catch (error: unknown) {
       let mensagemErro = 'Erro desconhecido';
       if (typeof error === 'string') {
-        mensagemErro = `Erro: ${error}`;
+        mensagemErro = error;
       } else if (error instanceof Error) {
-        mensagemErro = `Erro: ${error.message}`;
+        mensagemErro = error.message;
       }
-      
-      registrarOperacao(mensagemErro);
+
+      setToastMessage(mensagemErro);
+      setToastType('error');
+      setToastVisible(true);
       setMensagemAcao(mensagemErro);
     }
   };
 
+  const obterMensagemSucesso = (metodo: string, valor: string, indice: string, indiceSecundario: string): string => {
+    const mensagens: Record<string, string> = {
+      inserir: `Elemento ${valor} inserido na posição ${indice}`,
+      remover: `Elemento removido da posição ${indice}`,
+      buscar: `Busca realizada pelo elemento ${valor}`,
+      obterElemento: `Elemento obtido da posição ${indice}`,
+      definirElemento: `Elemento ${valor} definido na posição ${indice}`,
+      tamanho: `Tamanho do vetor: ${elementos.length}`,
+      estaVazio: elementos.length === 0 ? 'O vetor está vazio' : 'O vetor não está vazio',
+      limpar: 'Vetor limpo com sucesso',
+      ordenar: 'Vetor ordenado com sucesso',
+      inverter: 'Vetor invertido com sucesso',
+      adicionarNoFinal: `Elemento ${valor} adicionado ao final`,
+      estender: `Elementos adicionados ao vetor`,
+      removerDoFinal: 'Elemento removido do final',
+      fatiar: `Vetor fatiado do índice ${indice} até ${indiceSecundario}`,
+      contem: elementos.some(e => e.value === parseInt(valor)) ? `O vetor contém ${valor}` : `O vetor não contém ${valor}`,
+      indiceDe: `Índice do elemento ${valor} encontrado`
+    };
+
+    return mensagens[metodo] || 'Operação realizada com sucesso';
+  };
+
+  const toggleCategoria = (categoria: string) => {
+    setCategoriaAberta(categoriaAberta === categoria ? null : categoria);
+  };
+
+  const selecionarMetodo = (metodoId: string) => {
+    setMetodoAtual(metodoId);
+    setValor('');
+    setIndice('');
+    setIndiceSecundario('');
+  };
+
   return (
-    <div className="p-4 bg-gray-900 text-white min-h-screen">
-      <div className="mb-6 flex justify-between items-center">
-        <Button onClick={() => navigate(-1)} aria-label="Voltar">
-          <ChevronLeft className="mr-2 h-4 w-4" />
-          Voltar
-        </Button>
-        <Button onClick={() => window.close()} variant="destructive" aria-label="Sair">
-          Sair
-        </Button>
-      </div>
-
-      <h1 className="text-xl font-bold mt-4">Vetor</h1>
-      <p className="mt-4">Estrutura linear com elementos em posições contíguas de memória.</p>
-      <span className="text-purple-400">16 métodos disponíveis</span>
-
-      <div className="mb-6 bg-gray-800 p-4 rounded-lg overflow-x-auto">
-        <ul className="flex flex-row gap-2 min-w-min" role="list">
-          {elementos.length > 0 ? (
-            Array.from({ length: capacidade }).map((_, index) => (
-              <VectorCell
-                key={`${elementos[index]?.id}-${index}`}
-                value={elementos[index]?.value}
-                indice={index}
-                destacado={indiceDestacado === index}
-              />
-            ))
-          ) : (
-            <li role="listitem" className="text-gray-400 text-center mt-4">
-              Vetor vazio.
-            </li>
-          )}
-        </ul>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-6">
-        {metodosDisponiveis.map((metodo) => (
-          <button
-            key={metodo.id}
-            onClick={() => setMetodoAtual(metodo.id)}
-            className={`p-2 rounded text-left flex items-center gap-2 ${
-              metodoAtual === metodo.id ? 'bg-purple-600' : 'bg-gray-700'
-            } hover:bg-purple-500 transition-colors`}
-            aria-label={`Selecionar método ${metodo.titulo}`}
-          >
-            <span role="img" aria-hidden="true">
-              {metodo.icone}
-            </span>
-            <span>{metodo.titulo}</span>
-          </button>
-        ))}
-      </div>
-
-      {metodoAtual && (
-        <div className="mb-6 bg-gray-800 p-4 rounded">
-          <p className="text-gray-300 mb-4">
-            {metodosDisponiveis.find(m => m.id === metodoAtual)?.mensagemExplicativa}
-          </p>
-          <form onSubmit={executar} className="flex flex-wrap md:flex-nowrap items-center gap-4">
-            {metodosDisponiveis.find(m => m.id === metodoAtual)?.requisitos.includes('valor') && (
-              <input
-                type="text"
-                value={valor}
-                onChange={(e) => setValor(e.target.value)}
-                placeholder="Valor"
-                className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            )}
-            {metodosDisponiveis.find(m => m.id === metodoAtual)?.requisitos.includes('indice') && (
-              <input
-                type="number"
-                value={indice}
-                onChange={(e) => setIndice(e.target.value)}
-                placeholder="Índice"
-                className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            )}
-            {metodosDisponiveis.find(m => m.id === metodoAtual)?.requisitos.includes('indiceSecundario') && (
-              <input
-                type="number"
-                value={indiceSecundario}
-                onChange={(e) => setIndiceSecundario(e.target.value)}
-                placeholder="Índice Final"
-                className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            )}
-            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-              Executar
-            </button>
-          </form>
-        </div>
-      )}
-
-      {mensagemAcao && (
-        <div className="mb-6 bg-gray-800 p-3 rounded">
-          <p className={`${mensagemAcao.startsWith('Erro') ? 'text-red-400' : 'text-green-400'}`} role="alert">
-            {mensagemAcao}
-          </p>
-        </div>
-      )}
-
-      <div className="flex flex-wrap md:flex-nowrap gap-4 mb-6">
-        <div className="flex-1 bg-gray-800 p-3 rounded flex items-center justify-between min-w-[150px]">
-          <span className="text-blue-400">Tamanho:</span>
-          <span>{elementos.length}</span>
-        </div>
-        <div className="flex-1 bg-gray-800 p-3 rounded flex items-center justify-between min-w-[150px]">
-          <span className="text-blue-400">Estado:</span>
-          <span>{elementos.length > 0 ? 'Com elementos' : 'Vazio'}</span>
-        </div>
-      </div>
-
-      <div className="bg-gray-800 p-4 rounded">
-        <h3 className="text-lg font-bold mb-3">Histórico de Operações</h3>
-        <div className="space-y-2 max-h-40 overflow-y-auto">
-          {historico.map((op, index) => (
-            <div key={index} className="bg-gray-700 p-2 rounded">
-              {op.operacao} {new Date(op.timestamp).toLocaleTimeString()}
+    <main className="min-h-screen bg-slate-950">
+      <PageContainer size="wide" className="py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-4 space-y-6">
+            <div className="bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl p-6 text-white shadow-xl">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-white/20 rounded-lg">
+                  <Box className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <h1 className="text-2xl font-bold">Vetor</h1>
+              </div>
+              <p className="text-white/90">
+                Estrutura linear com elementos em posições contíguas de memória
+              </p>
+              <div className="mt-4 pt-4 border-t border-white/20">
+                <p className="text-sm text-white/80">
+                  <strong>{metodosDisponiveis.length} operações</strong> disponíveis
+                </p>
+              </div>
             </div>
-          ))}
+
+            <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+              <h2 className="text-lg font-semibold text-white mb-4">Informações</h2>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400">Tamanho atual:</span>
+                  <span className="text-white font-semibold">{elementos.length}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400">Capacidade:</span>
+                  <span className="text-white font-semibold">{capacidadeMaxima}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400">Espaços livres:</span>
+                  <span className="text-white font-semibold">{capacidadeMaxima - elementos.length}</span>
+                </div>
+                <div className="flex justify-between items-center pt-3 border-t border-slate-700">
+                  <span className="text-slate-400">Estado:</span>
+                  <span className={`font-semibold ${elementos.length > 0 ? 'text-emerald-400' : 'text-slate-500'}`}>
+                    {elementos.length > 0 ? 'Com dados' : 'Vazio'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+              <div className="p-4 border-b border-slate-700">
+                <h2 className="text-lg font-semibold text-white">Operações</h2>
+              </div>
+
+              <div className="divide-y divide-slate-700">
+                {Object.entries(categorias).map(([key, config]) => {
+                  const metodosDaCategoria = metodosDisponiveis.filter(m => m.categoria === key);
+                  const CategIcon = config.icon;
+                  const isAberta = categoriaAberta === key;
+
+                  return (
+                    <div key={key}>
+                      <button
+                        onClick={() => toggleCategoria(key)}
+                        className="w-full p-4 flex items-center justify-between hover:bg-slate-700/50 transition-colors"
+                        aria-expanded={isAberta}
+                        aria-controls={`categoria-${key}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <CategIcon className={`h-5 w-5 text-${config.cor}-500`} aria-hidden="true" />
+                          <span className="text-white font-medium">{config.titulo}</span>
+                          <span className="text-xs text-slate-500">({metodosDaCategoria.length})</span>
+                        </div>
+                        <motion.div
+                          animate={{ rotate: isAberta ? 180 : 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </motion.div>
+                      </button>
+
+                      <AnimatePresence>
+                        {isAberta && (
+                          <motion.div
+                            id={`categoria-${key}`}
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden bg-slate-900/50"
+                          >
+                            <div className="p-2 space-y-1">
+                              {metodosDaCategoria.map(metodo => {
+                                const MetodoIcon = metodo.icon;
+                                const isSelected = metodoAtual === metodo.id;
+
+                                return (
+                                  <button
+                                    key={metodo.id}
+                                    onClick={() => selecionarMetodo(metodo.id)}
+                                    className={`w-full p-3 rounded-lg text-left flex items-center gap-3 transition-all ${
+                                      isSelected
+                                        ? `bg-${config.cor}-500/20 border border-${config.cor}-500/50 text-white`
+                                        : 'hover:bg-slate-800 text-slate-300'
+                                    }`}
+                                    aria-pressed={isSelected}
+                                  >
+                                    <MetodoIcon className={`h-4 w-4 ${isSelected ? `text-${config.cor}-400` : 'text-slate-500'}`} aria-hidden="true" />
+                                    <span className="text-sm font-medium">{metodo.titulo}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {metodoSelecionado && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-slate-800 rounded-xl p-6 border border-slate-700"
+              >
+                <h3 className="text-white font-semibold mb-3">{metodoSelecionado.titulo}</h3>
+                <p className="text-slate-400 text-sm mb-4">{metodoSelecionado.mensagemExplicativa}</p>
+
+                <form onSubmit={executar} className="space-y-4">
+                  {metodoSelecionado.requisitos.includes('valor') && (
+                    <div>
+                      <label htmlFor="valor-input" className="block text-sm font-medium text-slate-300 mb-2">
+                        Valor
+                      </label>
+                      <input
+                        id="valor-input"
+                        type="text"
+                        value={valor}
+                        onChange={(e) => setValor(e.target.value)}
+                        placeholder={metodoSelecionado.id === 'estender' ? 'ex: 1,2,3' : 'Digite um número'}
+                        className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  )}
+
+                  {metodoSelecionado.requisitos.includes('indice') && (
+                    <div>
+                      <label htmlFor="indice-input" className="block text-sm font-medium text-slate-300 mb-2">
+                        Índice (posição)
+                      </label>
+                      <input
+                        id="indice-input"
+                        type="number"
+                        value={indice}
+                        onChange={(e) => setIndice(e.target.value)}
+                        placeholder="ex: 0"
+                        min="0"
+                        className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  )}
+
+                  {metodoSelecionado.requisitos.includes('indiceSecundario') && (
+                    <div>
+                      <label htmlFor="indice-final-input" className="block text-sm font-medium text-slate-300 mb-2">
+                        Índice Final
+                      </label>
+                      <input
+                        id="indice-final-input"
+                        type="number"
+                        value={indiceSecundario}
+                        onChange={(e) => setIndiceSecundario(e.target.value)}
+                        placeholder="ex: 5"
+                        min="0"
+                        className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  )}
+
+                  <Button type="submit" variant="primary" className="w-full" size="lg">
+                    Executar Operação
+                  </Button>
+                </form>
+              </motion.div>
+            )}
+          </div>
+
+          <div className="lg:col-span-8 space-y-6">
+            <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+              <h2 className="text-lg font-semibold text-white mb-4">Visualização do Vetor</h2>
+
+              <div className="bg-slate-900 rounded-lg p-6 min-h-[120px] overflow-x-auto">
+                {elementos.length > 0 ? (
+                  <ul className="flex gap-2 min-w-min" role="list">
+                    {Array.from({ length: capacidadeMaxima }).map((_, index) => (
+                      <VectorCell
+                        key={`${elementos[index]?.id || 'empty'}-${index}`}
+                        value={elementos[index]?.value}
+                        indice={index}
+                        destacado={indiceDestacado === index}
+                      />
+                    ))}
+                  </ul>
+                ) : (
+                  <EmptyState
+                    icon={Box}
+                    title="Vetor vazio"
+                    description="Adicione elementos usando as operações de inserção"
+                  />
+                )}
+              </div>
+            </div>
+
+            <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+              <h2 className="text-lg font-semibold text-white mb-4">Histórico de Operações</h2>
+
+              <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                {historico.length > 0 ? (
+                  historico.slice(-10).reverse().map((op, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="bg-slate-900 rounded-lg p-3 flex items-center justify-between"
+                    >
+                      <span className="text-slate-300 text-sm">{op.operacao}</span>
+                      <span className="text-slate-500 text-xs">
+                        {new Date(op.timestamp).toLocaleTimeString('pt-BR')}
+                      </span>
+                    </motion.div>
+                  ))
+                ) : (
+                  <p className="text-slate-500 text-sm text-center py-8">
+                    Nenhuma operação realizada ainda
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </PageContainer>
+
+      <Toast
+        message={toastMessage}
+        type={toastType}
+        isVisible={toastVisible}
+        onClose={() => setToastVisible(false)}
+      />
+    </main>
   );
 };
 

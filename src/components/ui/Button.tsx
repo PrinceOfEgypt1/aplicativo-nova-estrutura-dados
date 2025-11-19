@@ -2,30 +2,33 @@
 import { ButtonHTMLAttributes } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'default' | 'outline' | 'destructive' | 'ghost';
+  variant?: 'default' | 'primary' | 'secondary' | 'outline' | 'destructive' | 'ghost' | 'success';
   size?: 'default' | 'sm' | 'lg' | 'icon';
 }
 
-export function Button({ 
-  children, 
-  className = '', 
+export function Button({
+  children,
+  className = '',
   variant = 'default',
   size = 'default',
-  ...props 
+  ...props
 }: ButtonProps) {
-  const baseStyle = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
-  
+  const baseStyle = 'inline-flex items-center justify-center rounded-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:pointer-events-none disabled:opacity-50 active:scale-95';
+
   const variants = {
-    default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-    destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-    outline: 'border border-input hover:bg-accent hover:text-accent-foreground',
-    ghost: 'hover:bg-accent hover:text-accent-foreground'
+    default: 'bg-slate-700 text-white hover:bg-slate-600 shadow-sm',
+    primary: 'bg-gradient-to-r from-violet-500 to-indigo-600 text-white hover:from-violet-600 hover:to-indigo-700 shadow-lg shadow-violet-500/20',
+    secondary: 'bg-slate-800 text-white hover:bg-slate-700 border border-slate-700',
+    outline: 'border-2 border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white hover:border-slate-600',
+    destructive: 'bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/20',
+    ghost: 'text-slate-300 hover:bg-slate-800 hover:text-white',
+    success: 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-500/20'
   };
 
   const sizes = {
-    default: 'h-10 px-4 py-2',
-    sm: 'h-9 rounded-md px-3',
-    lg: 'h-11 rounded-md px-8',
+    default: 'h-10 px-4 py-2 text-sm',
+    sm: 'h-9 px-3 text-sm',
+    lg: 'h-12 px-6 text-base',
     icon: 'h-10 w-10'
   };
 
