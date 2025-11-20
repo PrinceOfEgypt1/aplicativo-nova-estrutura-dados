@@ -9,7 +9,7 @@
   "resolveJsonModule": true,
   "isolatedModules": true,
   "noEmit": true,
-  "types": ["jest", "node"], // Adicionado "node" para suporte ao Node.js
+  "types": ["jest", "node"],
   "typeRoots": ["./node_modules/@types", "./src/types"],
   "jsx": "react-jsx",
   "strict": true,

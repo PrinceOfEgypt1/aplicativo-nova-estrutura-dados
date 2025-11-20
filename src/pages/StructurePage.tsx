@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import { useParams, Navigate } from 'react-router-dom';
 import VisualizacaoVetor from '../components/DataStructures/Vetor/VisualizacaoVetor';
+import VisualizacaoPilha from '../components/DataStructures/Pilha/VisualizacaoPilha';
 // import { DataStructureProvider } from '../context/DataStructureContext'; // Não é mais necessário
 
 export function StructurePage() {
@@ -11,25 +12,35 @@ export function StructurePage() {
     return <Navigate to="/" replace />;
   }
 
-  if (tipo !== 'vetor') {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="bg-slate-900 p-8 rounded-lg shadow-lg max-w-md text-center">
-          <h2 className="text-xl font-bold text-white mb-4">Estrutura em Desenvolvimento</h2>
-          <p className="text-gray-300 mb-6">
-            A visualização para {tipo.replace('-', ' ')} está sendo implementada. Por favor, tente
-            novamente em breve.
-          </p>
-          <button
-            onClick={() => window.history.back()}
-            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors"
-          >
-            Voltar
-          </button>
-        </div>
-      </div>
-    );
-  }
+  /**
+   * Renderiza o componente de visualização apropriado baseado no tipo de estrutura
+   */
+  const renderVisualizacao = () => {
+    switch (tipo) {
+      case 'vetor':
+        return <VisualizacaoVetor />;
+      case 'pilha':
+        return <VisualizacaoPilha />;
+      default:
+        return (
+          <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+            <div className="bg-slate-900 p-8 rounded-lg shadow-lg max-w-md text-center">
+              <h2 className="text-xl font-bold text-white mb-4">Estrutura em Desenvolvimento</h2>
+              <p className="text-gray-300 mb-6">
+                A visualização para {tipo.replace('-', ' ')} está sendo implementada. Por favor, tente
+                novamente em breve.
+              </p>
+              <button
+                onClick={() => window.history.back()}
+                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors"
+              >
+                Voltar
+              </button>
+            </div>
+          </div>
+        );
+    }
+  };
 
   return (
     <motion.div
@@ -38,7 +49,7 @@ export function StructurePage() {
       exit={{ opacity: 0 }}
       className="min-h-screen bg-slate-950"
     >
-      <VisualizacaoVetor />
+      {renderVisualizacao()}
     </motion.div>
   );
 }
