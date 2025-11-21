@@ -1,10 +1,10 @@
 /**
- * Hook customizado para gerenciar o estado da Árvore Binária de Busca
+ * Hook customizado para gerenciar o estado da ï¿½rvore Binï¿½ria de Busca
  *
  * @remarks
- * Este hook encapsula toda a lógica de gerenciamento de estado da Árvore Binária,
- * incluindo operações, validações, histórico e feedback visual.
- * Utiliza useReducer para gerenciamento de estado complexo e previsível.
+ * Este hook encapsula toda a lï¿½gica de gerenciamento de estado da ï¿½rvore Binï¿½ria,
+ * incluindo operaï¿½ï¿½es, validaï¿½ï¿½es, histï¿½rico e feedback visual.
+ * Utiliza useReducer para gerenciamento de estado complexo e previsï¿½vel.
  */
 
 import { useState, useCallback, useReducer } from 'react';
@@ -12,7 +12,7 @@ import { ArvoreBinaria, No } from './arvore';
 import * as validationUtils from '../../../utils/validationUtils';
 
 /**
- * Estados possíveis de uma operação
+ * Estados possï¿½veis de uma operaï¿½ï¿½o
  */
 export enum OperationState {
   IDLE = 'idle',
@@ -22,7 +22,7 @@ export enum OperationState {
 }
 
 /**
- * Registro de uma operação no histórico
+ * Registro de uma operaï¿½ï¿½o no histï¿½rico
  */
 interface OperationHistory {
   operacao: string;
@@ -31,7 +31,7 @@ interface OperationHistory {
 }
 
 /**
- * Ação do reducer
+ * Aï¿½ï¿½o do reducer
  */
 interface Action {
   type: string;
@@ -49,9 +49,9 @@ interface State {
 }
 
 /**
- * Hook customizado para gerenciar a Árvore Binária
+ * Hook customizado para gerenciar a ï¿½rvore Binï¿½ria
  *
- * @returns Objeto com estado e métodos da árvore
+ * @returns Objeto com estado e mï¿½todos da ï¿½rvore
  *
  * @example
  * ```typescript
@@ -78,15 +78,20 @@ export function useArvoreBinaria() {
   };
 
   /**
-   * Reducer para gerenciar o estado da árvore
+   * Reducer para gerenciar o estado da ï¿½rvore
    *
    * @param state - Estado atual
-   * @param action - Ação a ser executada
+   * @param action - Aï¿½ï¿½o a ser executada
    * @returns Novo estado
-   * @throws {Error} Se a operação não puder ser executada
+   * @throws {Error} Se a operaï¿½ï¿½o nï¿½o puder ser executada
    */
   const reducer = (state: State, action: Action): State => {
-    const novaArvore = state.arvore;
+    // Criar nova instÃ¢ncia e copiar valores existentes para imutabilidade
+    const novaArvore = new ArvoreBinaria();
+    const valoresAtuais = state.arvore.emOrdem();
+    valoresAtuais.forEach(v => {
+      try { novaArvore.inserir(v); } catch(e) { /* ignora duplicatas */ }
+    });
 
     switch (action.type) {
       case 'inserir': {
@@ -95,9 +100,10 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
+          arvore: novaArvore,
           raiz: novaArvore.obterRaiz(),
           valorDestacado: value,
-          mensagemAcao: `Valor ${value} inserido na árvore`,
+          mensagemAcao: `Valor ${value} inserido na ï¿½rvore`,
         };
       }
 
@@ -107,9 +113,10 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
+          arvore: novaArvore,
           raiz: novaArvore.obterRaiz(),
           valorDestacado: null,
-          mensagemAcao: `Valor ${value} removido da árvore`,
+          mensagemAcao: `Valor ${value} removido da ï¿½rvore`,
         };
       }
 
@@ -119,10 +126,11 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
+          arvore: novaArvore,
           valorDestacado: encontrado ? value : null,
           mensagemAcao: encontrado
-            ? `Valor ${value} encontrado na árvore`
-            : `Valor ${value} não encontrado`,
+            ? `Valor ${value} encontrado na ï¿½rvore`
+            : `Valor ${value} nï¿½o encontrado`,
         };
       }
 
@@ -132,8 +140,9 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
+          arvore: novaArvore,
           valorDestacado: contem ? value : null,
-          mensagemAcao: `A árvore ${contem ? 'contém' : 'não contém'} o valor ${value}`,
+          mensagemAcao: `A ï¿½rvore ${contem ? 'contï¿½m' : 'nï¿½o contï¿½m'} o valor ${value}`,
         };
       }
 
@@ -142,6 +151,7 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
+          arvore: novaArvore,
           valorDestacado: minimo,
           mensagemAcao: `Menor valor: ${minimo}`,
         };
@@ -152,6 +162,7 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
+          arvore: novaArvore,
           valorDestacado: maximo,
           mensagemAcao: `Maior valor: ${maximo}`,
         };
@@ -162,7 +173,8 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
-          mensagemAcao: `Altura da árvore: ${altura}`,
+          arvore: novaArvore,
+          mensagemAcao: `Altura da ï¿½rvore: ${altura}`,
         };
       }
 
@@ -171,7 +183,8 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
-          mensagemAcao: `Tamanho da árvore: ${tamanho} nós`,
+          arvore: novaArvore,
+          mensagemAcao: `Tamanho da ï¿½rvore: ${tamanho} nï¿½s`,
         };
       }
 
@@ -180,18 +193,20 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
-          mensagemAcao: `A árvore está ${vazia ? '' : 'não '}vazia`,
+          arvore: novaArvore,
+          mensagemAcao: `A ï¿½rvore estï¿½ ${vazia ? '' : 'nï¿½o '}vazia`,
         };
       }
 
       case 'limpar': {
-        novaArvore.limpar();
+        const arvoreVazia = new ArvoreBinaria();
 
         return {
           ...state,
+          arvore: arvoreVazia,
           raiz: null,
           valorDestacado: null,
-          mensagemAcao: 'Árvore limpa',
+          mensagemAcao: 'ï¿½rvore limpa',
         };
       }
 
@@ -200,6 +215,7 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
+          arvore: novaArvore,
           mensagemAcao: `Em ordem: [${valores.join(', ')}]`,
         };
       }
@@ -209,7 +225,8 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
-          mensagemAcao: `Pré-ordem: [${valores.join(', ')}]`,
+          arvore: novaArvore,
+          mensagemAcao: `Prï¿½-ordem: [${valores.join(', ')}]`,
         };
       }
 
@@ -218,7 +235,8 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
-          mensagemAcao: `Pós-ordem: [${valores.join(', ')}]`,
+          arvore: novaArvore,
+          mensagemAcao: `Pï¿½s-ordem: [${valores.join(', ')}]`,
         };
       }
 
@@ -227,7 +245,8 @@ export function useArvoreBinaria() {
 
         return {
           ...state,
-          mensagemAcao: `Em nível: [${valores.join(', ')}]`,
+          arvore: novaArvore,
+          mensagemAcao: `Em nï¿½vel: [${valores.join(', ')}]`,
         };
       }
 
@@ -247,10 +266,10 @@ export function useArvoreBinaria() {
   const [historico, setHistorico] = useState<OperationHistory[]>([]);
 
   /**
-   * Registra uma operação no histórico
+   * Registra uma operaï¿½ï¿½o no histï¿½rico
    *
-   * @param operacao - Descrição da operação
-   * @param status - Status da operação (padrão: COMPLETED)
+   * @param operacao - Descriï¿½ï¿½o da operaï¿½ï¿½o
+   * @param status - Status da operaï¿½ï¿½o (padrï¿½o: COMPLETED)
    */
   const registrarOperacao = useCallback(
     (operacao: string, status: OperationState = OperationState.COMPLETED) => {
@@ -263,30 +282,30 @@ export function useArvoreBinaria() {
           },
           ...prev,
         ].slice(0, 50)
-      ); // Limita a 50 operações
+      ); // Limita a 50 operaï¿½ï¿½es
     },
     []
   );
 
   /**
-   * Executa um método da árvore
+   * Executa um mï¿½todo da ï¿½rvore
    *
-   * @param metodo - Nome do método a executar
-   * @param valor - Valor opcional necessário para alguns métodos
-   * @throws {Error} Se o método falhar ou os parâmetros forem inválidos
+   * @param metodo - Nome do mï¿½todo a executar
+   * @param valor - Valor opcional necessï¿½rio para alguns mï¿½todos
+   * @throws {Error} Se o mï¿½todo falhar ou os parï¿½metros forem invï¿½lidos
    *
    * @remarks
-   * Este método:
-   * - Valida os parâmetros de entrada
-   * - Despacha a ação apropriada para o reducer
-   * - Registra a operação no histórico
+   * Este mï¿½todo:
+   * - Valida os parï¿½metros de entrada
+   * - Despacha a aï¿½ï¿½o apropriada para o reducer
+   * - Registra a operaï¿½ï¿½o no histï¿½rico
    * - Gerencia o destaque visual
    * - Trata erros de forma consistente
    */
   const executarMetodo = useCallback(
     async (metodo: string, valor?: string | number) => {
       try {
-        // Função auxiliar para validar número
+        // Funï¿½ï¿½o auxiliar para validar nï¿½mero
         const validacaoNumeroValor = (valor: string | number): number => {
           const validacao = validationUtils.validarNumero(valor);
           if (!validacao.valido) {
@@ -295,7 +314,7 @@ export function useArvoreBinaria() {
           return validacao.valor!;
         };
 
-        // Executar método baseado no tipo
+        // Executar mï¿½todo baseado no tipo
         switch (metodo) {
           case 'inserir': {
             const valorValidado = validacaoNumeroValor(valor!);
@@ -333,25 +352,25 @@ export function useArvoreBinaria() {
               type: 'contem',
               payload: { value: valorValidado },
             });
-            registrarOperacao(`Contém: ${valorValidado}`);
+            registrarOperacao(`Contï¿½m: ${valorValidado}`);
             break;
           }
 
           case 'min': {
             if (arvore.estaVazio()) {
-              throw new Error('Árvore está vazia');
+              throw new Error('ï¿½rvore estï¿½ vazia');
             }
             dispatch({ type: 'min' });
-            registrarOperacao('Consultar mínimo');
+            registrarOperacao('Consultar mï¿½nimo');
             break;
           }
 
           case 'max': {
             if (arvore.estaVazio()) {
-              throw new Error('Árvore está vazia');
+              throw new Error('ï¿½rvore estï¿½ vazia');
             }
             dispatch({ type: 'max' });
-            registrarOperacao('Consultar máximo');
+            registrarOperacao('Consultar mï¿½ximo');
             break;
           }
 
@@ -369,13 +388,13 @@ export function useArvoreBinaria() {
 
           case 'estaVazio': {
             dispatch({ type: 'estaVazio' });
-            registrarOperacao('Verificação de vazio');
+            registrarOperacao('Verificaï¿½ï¿½o de vazio');
             break;
           }
 
           case 'limpar': {
             dispatch({ type: 'limpar' });
-            registrarOperacao('Árvore limpa');
+            registrarOperacao('ï¿½rvore limpa');
             break;
           }
 
@@ -387,27 +406,27 @@ export function useArvoreBinaria() {
 
           case 'preOrdem': {
             dispatch({ type: 'preOrdem' });
-            registrarOperacao('Travessia pré-ordem');
+            registrarOperacao('Travessia prï¿½-ordem');
             break;
           }
 
           case 'posOrdem': {
             dispatch({ type: 'posOrdem' });
-            registrarOperacao('Travessia pós-ordem');
+            registrarOperacao('Travessia pï¿½s-ordem');
             break;
           }
 
           case 'emNivel': {
             dispatch({ type: 'emNivel' });
-            registrarOperacao('Travessia em nível');
+            registrarOperacao('Travessia em nï¿½vel');
             break;
           }
 
           default:
-            throw new Error(`Método não implementado: ${metodo}`);
+            throw new Error(`Mï¿½todo nï¿½o implementado: ${metodo}`);
         }
 
-        // Limpar destaque após 1.5s
+        // Limpar destaque apï¿½s 1.5s
         if (valorDestacado !== null) {
           setTimeout(() => {
             dispatch({ type: 'SET_VALOR_DESTACADO', payload: null });
@@ -433,7 +452,7 @@ export function useArvoreBinaria() {
   }, []);
 
   /**
-   * Define a mensagem de ação
+   * Define a mensagem de aï¿½ï¿½o
    *
    * @param mensagem - Mensagem a exibir ou null para limpar
    */
