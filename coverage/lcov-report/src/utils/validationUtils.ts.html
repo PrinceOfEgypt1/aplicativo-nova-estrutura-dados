@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">63.15% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>19/19</span>
+                <span class='fraction'>12/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">52.94% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>17/17</span>
+                <span class='fraction'>9/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">63.15% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>19/19</span>
+                <span class='fraction'>12/19</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -105,42 +105,42 @@
 <a name='L40'></a><a href='#L40'>40</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">55x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">54x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">54x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">53x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">52x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">50x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// src/utils/validationUtils.ts
 &nbsp;
 export function validarNumero(valor: any): { valido: boolean; valor?: number; mensagem: string } {
@@ -165,21 +165,21 @@ export function validarNumero(valor: any): { valido: boolean; valor?: number; me
     return { valido: true, valor: numero, mensagem: 'Valor válido' };
   }
   
-  export function validarIndice(indice: number, tamanho: number, capacidade: number): { valido: boolean; mensagem: string } {
-    if (isNaN(indice) || !Number.isInteger(indice) || indice &lt; 0) {
-      return { valido: false, mensagem: "Índice inválido" };
+  export function <span class="fstat-no" title="function not covered" >validarIndice(</span>indice: number, tamanho: number, capacidade: number): { valido: boolean; mensagem: string } {
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (isNaN(indice) || !Number.isInteger(indice) || indice &lt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >      return { valido: false, mensagem: "Índice inválido" };</span>
     }
   
-    if (indice &gt;= capacidade) {
-      return { valido: false, mensagem: `Índice fora dos limites. A capacidade máxima é ${capacidade - 1}.` };
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (indice &gt;= capacidade) {</span>
+<span class="cstat-no" title="statement not covered" >      return { valido: false, mensagem: `Índice fora dos limites. A capacidade máxima é ${capacidade - 1}.` };</span>
     }
   
     // Permite inserção no final do vetor se houver espaço
-    if (indice &gt; tamanho &amp;&amp; indice !== tamanho) {
-        return { valido: false, mensagem: `Índice com lacuna. Próximo índice disponível: ${tamanho}` };
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (indice &gt; tamanho &amp;&amp; indice !== tamanho) {</span>
+<span class="cstat-no" title="statement not covered" >        return { valido: false, mensagem: `Índice com lacuna. Próximo índice disponível: ${tamanho}` };</span>
     }
   
-    return { valido: true, mensagem: 'Índice válido' };
+<span class="cstat-no" title="statement not covered" >    return { valido: true, mensagem: 'Índice válido' };</span>
   }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -187,7 +187,7 @@ export function validarNumero(valor: any): { valido: boolean; valor?: number; me
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-12-06T04:31:42.949Z
+                at 2025-11-21T00:14:28.256Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
