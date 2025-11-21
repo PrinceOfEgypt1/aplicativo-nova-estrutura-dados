@@ -2,8 +2,8 @@
  * Componente VisualizacaoPilha
  *
  * @remarks
- * Interface principal para visualização e manipulação da estrutura de dados Pilha.
- * Permite executar operações LIFO com feedback visual em tempo real.
+ * Interface principal para visualizaï¿½ï¿½o e manipulaï¿½ï¿½o da estrutura de dados Pilha.
+ * Permite executar operaï¿½ï¿½es LIFO com feedback visual em tempo real.
  */
 
 import * as React from 'react';
@@ -12,10 +12,10 @@ import StackCell from './StackCell';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '../../ui/Button';
-import { metodosDisponiveis, type MetodoPilha } from './metodosPilha';
+import { metodosDisponiveis } from './metodosPilha';
 
 /**
- * Componente principal de visualização da Pilha
+ * Componente principal de visualizaï¿½ï¿½o da Pilha
  *
  * @returns Elemento React com a interface completa da Pilha
  */
@@ -37,9 +37,9 @@ const VisualizacaoPilha: React.FC = () => {
   const [valor, setValor] = React.useState('');
 
   /**
-   * Manipula a execução de um método da pilha
+   * Manipula a execuï¿½ï¿½o de um mï¿½todo da pilha
    *
-   * @param e - Evento de submit do formulário
+   * @param e - Evento de submit do formulï¿½rio
    */
   const executar = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,7 +48,7 @@ const VisualizacaoPilha: React.FC = () => {
       const metodoInfo = metodosDisponiveis.find((m) => m.id === metodoAtual);
       if (!metodoInfo) return;
 
-      // Executar método
+      // Executar mï¿½todo
       await executarMetodo(metodoAtual!, valor);
 
       // Mensagens de sucesso personalizadas
@@ -67,19 +67,19 @@ const VisualizacaoPilha: React.FC = () => {
           mensagemSucesso = 'Tamanho da pilha consultado';
           break;
         case 'estaVazio':
-          mensagemSucesso = 'Verificação de pilha vazia realizada';
+          mensagemSucesso = 'Verificaï¿½ï¿½o de pilha vazia realizada';
           break;
         case 'limpar':
           mensagemSucesso = 'Pilha limpa com sucesso';
           break;
         case 'contem':
-          mensagemSucesso = `Verificação de existência do elemento ${valor} realizada`;
+          mensagemSucesso = `Verificaï¿½ï¿½o de existï¿½ncia do elemento ${valor} realizada`;
           break;
         case 'buscar':
           mensagemSucesso = `Busca do elemento ${valor} realizada`;
           break;
         default:
-          mensagemSucesso = 'Operação realizada com sucesso';
+          mensagemSucesso = 'Operaï¿½ï¿½o realizada com sucesso';
       }
 
       registrarOperacao(mensagemSucesso);
@@ -88,7 +88,7 @@ const VisualizacaoPilha: React.FC = () => {
       // Limpar inputs
       setValor('');
 
-      // Limpar destaque após 1.5s
+      // Limpar destaque apï¿½s 1.5s
       setTimeout(() => {
         setIndiceDestacado(null);
       }, 1500);
@@ -107,7 +107,7 @@ const VisualizacaoPilha: React.FC = () => {
 
   return (
     <div className="p-4 bg-gray-900 text-white min-h-screen">
-      {/* Cabeçalho com navegação */}
+      {/* Cabeï¿½alho com navegaï¿½ï¿½o */}
       <div className="mb-6 flex justify-between items-center">
         <Button onClick={() => navigate(-1)} aria-label="Voltar">
           <ChevronLeft className="mr-2 h-4 w-4" />
@@ -118,12 +118,12 @@ const VisualizacaoPilha: React.FC = () => {
         </Button>
       </div>
 
-      {/* Título e descrição */}
+      {/* Tï¿½tulo e descriï¿½ï¿½o */}
       <h1 className="text-xl font-bold mt-4">Pilha (Stack)</h1>
       <p className="mt-4">Estrutura LIFO (Last In, First Out) para processamento ordenado.</p>
-      <span className="text-rose-400">8 métodos disponíveis</span>
+      <span className="text-rose-400">8 mï¿½todos disponï¿½veis</span>
 
-      {/* Visualização da pilha (vertical) */}
+      {/* Visualizaï¿½ï¿½o da pilha (vertical) */}
       <div className="mb-6 bg-gray-800 p-4 rounded-lg overflow-y-auto max-h-96">
         <ul className="flex flex-col-reverse gap-2 max-w-md mx-auto" role="list">
           {elementos.length > 0 ? (
@@ -146,12 +146,12 @@ const VisualizacaoPilha: React.FC = () => {
         {/* Indicador visual de topo */}
         {elementos.length > 0 && (
           <div className="mt-4 text-center">
-            <span className="text-blue-400 text-sm">‘ TOPO DA PILHA ‘</span>
+            <span className="text-blue-400 text-sm">ï¿½ TOPO DA PILHA ï¿½</span>
           </div>
         )}
       </div>
 
-      {/* Grid de métodos */}
+      {/* Grid de mï¿½todos */}
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-6">
         {metodosDisponiveis.map((metodo) => (
           <button
@@ -160,7 +160,7 @@ const VisualizacaoPilha: React.FC = () => {
             className={`p-2 rounded text-left flex items-center gap-2 ${
               metodoAtual === metodo.id ? 'bg-rose-600' : 'bg-gray-700'
             } hover:bg-rose-500 transition-colors`}
-            aria-label={`Selecionar método ${metodo.titulo}`}
+            aria-label={`Selecionar mï¿½todo ${metodo.titulo}`}
           >
             <span role="img" aria-hidden="true">
               {metodo.icone}
@@ -170,30 +170,30 @@ const VisualizacaoPilha: React.FC = () => {
         ))}
       </div>
 
-      {/* Formulário de execução */}
+      {/* Formulï¿½rio de execuï¿½ï¿½o */}
       {metodoAtual && (
         <div className="mb-6 bg-gray-800 p-4 rounded">
           <p className="text-gray-300 mb-4">
             {metodosDisponiveis.find((m) => m.id === metodoAtual)?.mensagemExplicativa}
           </p>
           <form onSubmit={executar} className="flex flex-wrap md:flex-nowrap items-center gap-4">
-            {/* Input de valor (quando necessário) */}
+            {/* Input de valor (quando necessï¿½rio) */}
             {metodosDisponiveis.find((m) => m.id === metodoAtual)?.requisitos.includes('valor') && (
               <input
                 type="text"
                 value={valor}
                 onChange={(e) => setValor(e.target.value)}
-                placeholder="Valor (número inteiro)"
+                placeholder="Valor (nï¿½mero inteiro)"
                 className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent"
                 aria-label="Valor do elemento"
               />
             )}
 
-            {/* Botão de executar */}
+            {/* Botï¿½o de executar */}
             <button
               type="submit"
               className="bg-rose-500 text-white px-4 py-2 rounded hover:bg-rose-600 transition-colors font-semibold"
-              aria-label="Executar operação"
+              aria-label="Executar operaï¿½ï¿½o"
             >
               Executar
             </button>
@@ -213,7 +213,7 @@ const VisualizacaoPilha: React.FC = () => {
         </div>
       )}
 
-      {/* Informações de estado */}
+      {/* Informaï¿½ï¿½es de estado */}
       <div className="flex flex-wrap md:flex-nowrap gap-4 mb-6">
         <div className="flex-1 bg-gray-800 p-3 rounded flex items-center justify-between min-w-[150px]">
           <span className="text-rose-400">Tamanho:</span>
@@ -231,9 +231,9 @@ const VisualizacaoPilha: React.FC = () => {
         </div>
       </div>
 
-      {/* Histórico de operações */}
+      {/* Histï¿½rico de operaï¿½ï¿½es */}
       <div className="bg-gray-800 p-4 rounded">
-        <h3 className="text-lg font-bold mb-3">Histórico de Operações</h3>
+        <h3 className="text-lg font-bold mb-3">Histï¿½rico de Operaï¿½ï¿½es</h3>
         <div className="space-y-2 max-h-40 overflow-y-auto">
           {historico.length > 0 ? (
             historico.map((op, index) => (
@@ -252,7 +252,7 @@ const VisualizacaoPilha: React.FC = () => {
               </div>
             ))
           ) : (
-            <p className="text-gray-400 text-center py-2">Nenhuma operação executada ainda</p>
+            <p className="text-gray-400 text-center py-2">Nenhuma operaï¿½ï¿½o executada ainda</p>
           )}
         </div>
       </div>
