@@ -10,7 +10,6 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/spec
 ### Em Desenvolvimento
 - Sistema de animações avançado
 - Design System completo
-- Testes para Lista Ligada
 
 ---
 
@@ -39,6 +38,10 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/spec
   - Classe `ListaLigada` com ponteiro cabeça
   - Hook `useListaLigada` com useReducer (12 actions)
   - Metadados organizados em 5 grupos (inserção, remoção, busca, informação, manipulação)
+- **Testes**:
+  - `useListaLigada.test.ts` - 50+ casos de teste cobrindo todos os 12 métodos
+  - `NoListaLigada.test.tsx` - Testes de renderização, acessibilidade e comportamento
+  - Cobertura completa de validações, erros, histórico e cenários complexos
 - **Documentação**:
   - TSDoc completo em todos os arquivos
   - ADR-0004: Decisão de implementação da Lista Ligada

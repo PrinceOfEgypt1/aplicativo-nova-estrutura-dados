@@ -35,7 +35,7 @@ Este projeto é uma **aplicação web educacional** desenvolvida com React, Type
 | **Vetor** | ✅ Completo | 16 | 582 linhas | ✅ |
 | **Pilha (Stack)** | ✅ Completo | 8 | 480+ linhas | ✅ |
 | **Fila (Queue)** | ✅ Completo | 8 | 550+ linhas | ✅ |
-| **Lista Ligada** | ✅ Completo | 12 | Em desenvolvimento | ✅ |
+| **Lista Ligada** | ✅ Completo | 12 | 700+ linhas | ✅ |
 
 ### 🔄 Em Desenvolvimento (50%)
 
