@@ -8,9 +8,52 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/spec
 ## [Não Lançado]
 
 ### Em Desenvolvimento
-- Lista Ligada com operações de nó
 - Sistema de animações avançado
 - Design System completo
+- Testes para Lista Ligada
+
+---
+
+## [0.4.0] - 2025-11-21
+
+### ✨ Adicionado
+- **Lista Ligada (Linked List)** - Estrutura de dados dinâmica completa com 12 métodos
+  - `inserirNoInicio(valor)` - Insere nó no início O(1)
+  - `inserirNoFim(valor)` - Insere nó no final O(n)
+  - `inserirNaPosicao(indice, valor)` - Insere em posição específica O(n)
+  - `removerDoInicio()` - Remove do início O(1)
+  - `removerDoFim()` - Remove do final O(n)
+  - `removerDaPosicao(indice)` - Remove de posição específica O(n)
+  - `buscar(valor)` - Busca elemento e retorna índice O(n)
+  - `obterPorIndice(indice)` - Obtém valor por índice O(n)
+  - `tamanho()` - Retorna número de nós
+  - `estaVazia()` - Verifica se está vazia
+  - `limpar()` - Remove todos os nós
+  - `obterCabeca()` - Retorna valor da cabeça
+- **Componentes de UI**:
+  - `NoListaLigada.tsx` - Componente de nó com setas de ligação (→)
+  - `VisualizacaoListaLigada.tsx` - Interface horizontal com ponteiros visuais
+  - `InformacoesListaLigada.tsx` - Documentação educacional completa
+- **Arquitetura**:
+  - Classe `No` com propriedades `valor` e `proximo`
+  - Classe `ListaLigada` com ponteiro cabeça
+  - Hook `useListaLigada` com useReducer (12 actions)
+  - Metadados organizados em 5 grupos (inserção, remoção, busca, informação, manipulação)
+- **Documentação**:
+  - TSDoc completo em todos os arquivos
+  - ADR-0004: Decisão de implementação da Lista Ligada
+  - Atualização da API-OVERVIEW.md com 12 métodos
+  - Seção de complexidade de tempo (Big O) no painel informativo
+
+### 🔧 Modificado
+- `StructurePage.tsx` - Adicionada rota `/estrutura/lista-ligada`
+- `README.md` - Atualizado progresso para 50% (4/8 estruturas)
+
+### 🎨 Design
+- Cores verdes (green-600) para diferenciação visual
+- Layout horizontal com setas → entre nós e → null no final
+- Indicador "CABEÇA" em cyan no primeiro nó
+- Inputs duplos para métodos que requerem índice + valor
 
 ---
 

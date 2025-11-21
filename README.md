@@ -28,19 +28,19 @@ Este projeto é uma **aplicação web educacional** desenvolvida com React, Type
 
 ## 📦 Estruturas de Dados Implementadas
 
-### ✅ Implementadas (45%)
+### ✅ Implementadas (50%)
 
 | Estrutura | Status | Métodos | Testes | Documentação |
 |-----------|--------|---------|--------|--------------|
 | **Vetor** | ✅ Completo | 16 | 582 linhas | ✅ |
 | **Pilha (Stack)** | ✅ Completo | 8 | 480+ linhas | ✅ |
 | **Fila (Queue)** | ✅ Completo | 8 | 550+ linhas | ✅ |
+| **Lista Ligada** | ✅ Completo | 12 | Em desenvolvimento | ✅ |
 
-### 🔄 Em Desenvolvimento (55%)
+### 🔄 Em Desenvolvimento (50%)
 
 | Estrutura | Prioridade | Status |
 |-----------|-----------|--------|
-| **Lista Ligada** | Alta | 🔄 Planejada |
 | **Árvore Binária** | Média | 🔄 20% (visualização parcial) |
 | **Grafo** | Média | 🔄 Planejada |
 | **Matriz** | Baixa | 🔄 Planejada |
@@ -102,6 +102,7 @@ http://localhost:5173
 - `/estrutura/vetor` - Visualização do Vetor
 - `/estrutura/pilha` - Visualização da Pilha
 - `/estrutura/fila` - Visualização da Fila
+- `/estrutura/lista-ligada` - Visualização da Lista Ligada
 
 ---
 
@@ -114,7 +115,8 @@ aplicativo-nova-estrutura-dados/
 │   │   ├── DataStructures/        # Estruturas de dados
 │   │   │   ├── Vetor/             # ✅ Implementado
 │   │   │   ├── Pilha/             # ✅ Implementado
-│   │   │   ├── Fila/              # 🔄 Planejado
+│   │   │   ├── Fila/              # ✅ Implementado
+│   │   │   ├── ListaLigada/       # ✅ Implementado
 │   │   │   └── ...
 │   │   ├── shared/                # Componentes compartilhados
 │   │   └── ui/                    # Componentes UI básicos
