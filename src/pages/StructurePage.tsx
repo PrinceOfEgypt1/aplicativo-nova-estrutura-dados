@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useParams, Navigate } from 'react-router-dom';
 import VisualizacaoVetor from '../components/DataStructures/Vetor/VisualizacaoVetor';
 import VisualizacaoPilha from '../components/DataStructures/Pilha/VisualizacaoPilha';
+import VisualizacaoFila from '../components/DataStructures/Fila/VisualizacaoFila';
 // import { DataStructureProvider } from '../context/DataStructureContext'; // Não é mais necessário
 
 export function StructurePage() {
@@ -21,6 +22,8 @@ export function StructurePage() {
         return <VisualizacaoVetor />;
       case 'pilha':
         return <VisualizacaoPilha />;
+      case 'fila':
+        return <VisualizacaoFila />;
       default:
         return (
           <div className="min-h-screen bg-slate-950 flex items-center justify-center">

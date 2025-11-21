@@ -8,10 +8,40 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/spec
 ## [Não Lançado]
 
 ### Em Desenvolvimento
-- Fila (Queue) com operações FIFO
 - Lista Ligada com operações de nó
 - Sistema de animações avançado
 - Design System completo
+
+---
+
+## [0.3.0] - 2025-11-20
+
+### ✨ Adicionado
+- **Fila (Queue)** - Estrutura de dados completa com 8 métodos FIFO
+  - `enqueue(valor)` - Adiciona elemento no final
+  - `dequeue()` - Remove e retorna da frente
+  - `primeiro()` - Visualiza a frente sem remover
+  - `ultimo()` - Visualiza o final sem remover
+  - `tamanho()` - Retorna número de elementos
+  - `estaVazio()` - Verifica se está vazia
+  - `limpar()` - Remove todos os elementos
+  - `contem(valor)` - Busca elemento
+- **Componentes de UI**:
+  - `QueueCell.tsx` - Célula com layout horizontal e indicadores de frente/final
+  - `VisualizacaoFila.tsx` - Interface principal com visualização horizontal
+  - `InformacoesFila.tsx` - Painel informativo educacional
+- **Testes**:
+  - 45+ casos de teste para hook useFila
+  - 30+ casos de teste para componente QueueCell
+  - Cobertura de validações, erros e cenários FIFO complexos
+- **Documentação**:
+  - TSDoc completo em todos os arquivos
+  - ADR-0003: Decisão de implementação da Fila
+  - Atualização da API-OVERVIEW.md com métodos da Fila
+
+### 🔧 Modificado
+- `StructurePage.tsx` - Atualizado para incluir roteamento para Fila
+- `README.md` - Atualizado progresso (45% implementado)
 
 ---
 

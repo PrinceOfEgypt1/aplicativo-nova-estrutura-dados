@@ -28,18 +28,18 @@ Este projeto é uma **aplicação web educacional** desenvolvida com React, Type
 
 ## 📦 Estruturas de Dados Implementadas
 
-### ✅ Implementadas (30%)
+### ✅ Implementadas (45%)
 
 | Estrutura | Status | Métodos | Testes | Documentação |
 |-----------|--------|---------|--------|--------------|
 | **Vetor** | ✅ Completo | 16 | 582 linhas | ✅ |
 | **Pilha (Stack)** | ✅ Completo | 8 | 480+ linhas | ✅ |
+| **Fila (Queue)** | ✅ Completo | 8 | 550+ linhas | ✅ |
 
-### 🔄 Em Desenvolvimento (70%)
+### 🔄 Em Desenvolvimento (55%)
 
 | Estrutura | Prioridade | Status |
 |-----------|-----------|--------|
-| **Fila (Queue)** | Alta | 🔄 Planejada |
 | **Lista Ligada** | Alta | 🔄 Planejada |
 | **Árvore Binária** | Média | 🔄 20% (visualização parcial) |
 | **Grafo** | Média | 🔄 Planejada |
@@ -101,6 +101,7 @@ http://localhost:5173
 - `/` - Página inicial com lista de estruturas
 - `/estrutura/vetor` - Visualização do Vetor
 - `/estrutura/pilha` - Visualização da Pilha
+- `/estrutura/fila` - Visualização da Fila
 
 ---
 
@@ -181,7 +182,7 @@ aplicativo-nova-estrutura-dados/
 ### Fase 1: Estruturas Fundamentais (🔴 Crítico)
 - [x] Vetor completo com 16 métodos
 - [x] Pilha (Stack) com 8 métodos
-- [ ] Fila (Queue)
+- [x] Fila (Queue) com 8 métodos
 - [ ] Lista Ligada
 - [ ] Árvore Binária completa
 

@@ -140,6 +140,80 @@ interface OperationHistory {
 
 ---
 
+### ✅ Fila (Queue)
+
+**Importação:**
+```typescript
+import { Fila, useFila } from '@/components/DataStructures/Fila';
+```
+
+**API da Classe:**
+```typescript
+class Fila {
+  constructor(capacidadeInicial?: number)
+
+  // Operações principais
+  enqueue(elemento: number): void
+  dequeue(): number
+  primeiro(): number
+  ultimo(): number
+
+  // Informação
+  tamanho(): number
+  estaVazio(): boolean
+
+  // Manipulação
+  limpar(): void
+
+  // Busca
+  contem(elemento: number): boolean
+
+  // Utilitários
+  paraArray(): number[]
+  capacidadeMaxima(): number
+}
+```
+
+**Hook React:**
+```typescript
+function useFila(capacidadeInicial?: number) {
+  return {
+    elementos: QueueElement[],
+    executarMetodo: (metodo: string, valor?: string | number) => Promise<void>,
+    mensagemAcao: string | null,
+    historico: OperationHistory[],
+    indiceDestacado: number | null,
+    capacidadeMaxima: number,
+    setIndiceDestacado: (indice: number | null) => void,
+    setMensagemAcao: (mensagem: string | null) => void,
+    registrarOperacao: (operacao: string, status?: OperationState) => void
+  }
+}
+```
+
+**Tipos:**
+```typescript
+interface QueueElement {
+  value: number;
+  id: string;
+}
+
+enum OperationState {
+  IDLE = 'idle',
+  RUNNING = 'running',
+  COMPLETED = 'completed',
+  ERROR = 'error'
+}
+
+interface OperationHistory {
+  operacao: string;
+  timestamp: number;
+  status: OperationState;
+}
+```
+
+---
+
 ## 🔧 Utilitários
 
 ### validationUtils
@@ -273,6 +347,72 @@ function MeuComponente() {
 }
 ```
 
+### Uso da Classe Fila
+
+```typescript
+import { Fila } from '@/components/DataStructures/Fila';
+
+const fila = new Fila(10);  // Capacidade: 10
+
+// Adicionar elementos
+fila.enqueue(5);
+fila.enqueue(10);
+fila.enqueue(15);
+
+// Visualizar frente
+const frente = fila.primeiro();  // 5
+
+// Visualizar final
+const final = fila.ultimo();  // 15
+
+// Remover da frente (FIFO)
+const removido = fila.dequeue();  // 5
+
+// Verificar se contém
+const contem = fila.contem(10);  // true
+
+// Tamanho
+const tamanho = fila.tamanho();  // 2
+
+// Limpar
+fila.limpar();
+```
+
+### Uso do Hook useFila
+
+```typescript
+import { useFila } from '@/components/DataStructures/Fila';
+
+function MeuComponente() {
+  const {
+    elementos,
+    executarMetodo,
+    mensagemAcao,
+    historico
+  } = useFila(20);
+
+  const handleEnqueue = async () => {
+    try {
+      await executarMetodo('enqueue', 42);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={handleEnqueue}>Enqueue 42</button>
+      {mensagemAcao && <p>{mensagemAcao}</p>}
+      <ul>
+        {elementos.map(el => (
+          <li key={el.id}>{el.value}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
 ---
 
 ## ⚠️ Tratamento de Erros
@@ -291,10 +431,16 @@ try {
 }
 ```
 
-**Erros comuns:**
+**Erros comuns da Pilha:**
 - `"A pilha está cheia"` - Capacidade excedida
 - `"Pilha está vazia"` - Pop/Peek em pilha vazia
 - `"O valor deve ser um número inteiro"` - Valor não é inteiro
+- `"O valor deve estar entre -1000 e 1000"` - Fora do range
+
+**Erros comuns da Fila:**
+- `"A fila está cheia"` - Capacidade excedida
+- `"Fila está vazia"` - Dequeue/Primeiro/Ultimo em fila vazia
+- `"Apenas números inteiros são permitidos"` - Valor não é inteiro
 - `"O valor deve estar entre -1000 e 1000"` - Fora do range
 
 ---
