@@ -1,116 +1,98 @@
-import { ListaDuplamenteLigada } from "./listaDupla";
-
 /**
- * M�todos auxiliares para Lista Duplamente Ligada
+ * Metadados e configurações dos métodos da Lista Duplamente Ligada
  */
 
-/**
- * Formata a lista para exibi��o
- *
- * @param lista - Inst�ncia da lista
- * @returns String representando a lista
- */
-export function formatarLista(lista: ListaDuplamenteLigada): string {
-  if (lista.estaVazia()) {
-    return "Lista vazia: null";
-  }
-
-  const elementos = lista.paraArray();
-  return `[${elementos.join(" <-> ")}]`;
+export interface MetodoListaDupla {
+  id: string;
+  titulo: string;
+  icone: string;
+  requisitos: ('valor' | 'indice')[];
+  mensagemExplicativa: string;
 }
 
-/**
- * Formata a lista em ordem reversa para exibi��o
- *
- * @param lista - Inst�ncia da lista
- * @returns String representando a lista em ordem reversa
- */
-export function formatarListaReversa(lista: ListaDuplamenteLigada): string {
-  if (lista.estaVazia()) {
-    return "Lista vazia: null";
+export const metodosDisponiveis: MetodoListaDupla[] = [
+  {
+    id: 'inserirNoInicio',
+    titulo: 'Inserir Início',
+    icone: '⬅➕',
+    requisitos: ['valor'],
+    mensagemExplicativa: 'Insira o valor (número inteiro entre -1000 e 1000) para adicionar no início da lista.'
+  },
+  {
+    id: 'inserirNoFim',
+    titulo: 'Inserir Fim',
+    icone: '➕➡',
+    requisitos: ['valor'],
+    mensagemExplicativa: 'Insira o valor para adicionar no final da lista.'
+  },
+  {
+    id: 'inserirNaPosicao',
+    titulo: 'Inserir Posição',
+    icone: '📌',
+    requisitos: ['indice', 'valor'],
+    mensagemExplicativa: 'Insira o índice (0-based) e o valor para inserir em uma posição específica.'
+  },
+  {
+    id: 'removerDoInicio',
+    titulo: 'Remover Início',
+    icone: '⬅➖',
+    requisitos: [],
+    mensagemExplicativa: 'Remove o primeiro elemento da lista.'
+  },
+  {
+    id: 'removerDoFim',
+    titulo: 'Remover Fim',
+    icone: '➖➡',
+    requisitos: [],
+    mensagemExplicativa: 'Remove o último elemento da lista.'
+  },
+  {
+    id: 'removerDaPosicao',
+    titulo: 'Remover Posição',
+    icone: '🗑',
+    requisitos: ['indice'],
+    mensagemExplicativa: 'Remove o elemento de uma posição específica (0-based).'
+  },
+  {
+    id: 'buscar',
+    titulo: 'Buscar',
+    icone: '🔍',
+    requisitos: ['valor'],
+    mensagemExplicativa: 'Busca a primeira ocorrência de um valor e retorna seu índice.'
+  },
+  {
+    id: 'obterPorIndice',
+    titulo: 'Obter',
+    icone: '👁',
+    requisitos: ['indice'],
+    mensagemExplicativa: 'Obtém o valor de um elemento em uma posição específica.'
+  },
+  {
+    id: 'atualizar',
+    titulo: 'Atualizar',
+    icone: '✏',
+    requisitos: ['indice', 'valor'],
+    mensagemExplicativa: 'Atualiza o valor em uma posição específica da lista.'
+  },
+  {
+    id: 'inverter',
+    titulo: 'Inverter',
+    icone: '🔄',
+    requisitos: [],
+    mensagemExplicativa: 'Inverte a ordem de todos os elementos da lista.'
+  },
+  {
+    id: 'tamanho',
+    titulo: 'Tamanho',
+    icone: '📏',
+    requisitos: [],
+    mensagemExplicativa: 'Retorna a quantidade de elementos na lista.'
+  },
+  {
+    id: 'limpar',
+    titulo: 'Limpar',
+    icone: '🗑',
+    requisitos: [],
+    mensagemExplicativa: 'Remove todos os elementos da lista.'
   }
-
-  const elementos = lista.paraArrayReverso();
-  return `[${elementos.join(" <-> ")}]`;
-}
-
-/**
- * Cria uma lista a partir de um array
- *
- * @param valores - Array de valores
- * @returns Nova inst�ncia de ListaDuplamenteLigada
- */
-export function criarListaDoArray(valores: number[]): ListaDuplamenteLigada {
-  const lista = new ListaDuplamenteLigada();
-
-  for (const valor of valores) {
-    lista.inserirNoFim(valor);
-  }
-
-  return lista;
-}
-
-/**
- * Verifica se duas listas s�o iguais
- *
- * @param lista1 - Primeira lista
- * @param lista2 - Segunda lista
- * @returns true se as listas forem iguais, false caso contr�rio
- */
-export function listasIguais(
-  lista1: ListaDuplamenteLigada,
-  lista2: ListaDuplamenteLigada
-): boolean {
-  if (lista1.tamanho() !== lista2.tamanho()) {
-    return false;
-  }
-
-  const array1 = lista1.paraArray();
-  const array2 = lista2.paraArray();
-
-  for (let i = 0; i < array1.length; i++) {
-    if (array1[i] !== array2[i]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-/**
- * Retorna estat�sticas da lista
- *
- * @param lista - Inst�ncia da lista
- * @returns Objeto com estat�sticas (tamanho, min, max, soma, m�dia)
- */
-export function obterEstatisticas(lista: ListaDuplamenteLigada): {
-  tamanho: number;
-  min: number | null;
-  max: number | null;
-  soma: number;
-  media: number | null;
-} {
-  if (lista.estaVazia()) {
-    return {
-      tamanho: 0,
-      min: null,
-      max: null,
-      soma: 0,
-      media: null,
-    };
-  }
-
-  const elementos = lista.paraArray();
-  const min = Math.min(...elementos);
-  const max = Math.max(...elementos);
-  const soma = elementos.reduce((acc, val) => acc + val, 0);
-  const media = soma / elementos.length;
-
-  return {
-    tamanho: lista.tamanho(),
-    min,
-    max,
-    soma,
-    media,
-  };
-}
+];
