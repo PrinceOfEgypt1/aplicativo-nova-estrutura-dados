@@ -1,14 +1,92 @@
 import { Grafo } from "./grafo";
 
 /**
- * M�todos auxiliares para Grafo
+ * Metadados e configurações dos métodos do Grafo
  */
 
+export interface MetodoGrafo {
+  id: string;
+  titulo: string;
+  icone: string;
+  requisitos: ('vertice' | 'origem' | 'destino')[];
+  mensagemExplicativa: string;
+}
+
+export const metodosDisponiveis: MetodoGrafo[] = [
+  {
+    id: 'adicionarVertice',
+    titulo: 'Add Vértice',
+    icone: '➕🔵',
+    requisitos: ['vertice'],
+    mensagemExplicativa: 'Insira o número do vértice (0-99) para adicionar ao grafo.'
+  },
+  {
+    id: 'removerVertice',
+    titulo: 'Rem Vértice',
+    icone: '➖🔵',
+    requisitos: ['vertice'],
+    mensagemExplicativa: 'Remove um vértice e todas as suas arestas.'
+  },
+  {
+    id: 'adicionarAresta',
+    titulo: 'Add Aresta',
+    icone: '➕🔗',
+    requisitos: ['origem', 'destino'],
+    mensagemExplicativa: 'Insira vértice de origem e destino para criar uma aresta.'
+  },
+  {
+    id: 'removerAresta',
+    titulo: 'Rem Aresta',
+    icone: '➖🔗',
+    requisitos: ['origem', 'destino'],
+    mensagemExplicativa: 'Remove a aresta entre dois vértices.'
+  },
+  {
+    id: 'buscaProfundidade',
+    titulo: 'DFS',
+    icone: '🔍⬇',
+    requisitos: ['vertice'],
+    mensagemExplicativa: 'Busca em profundidade (Depth-First Search) a partir de um vértice.'
+  },
+  {
+    id: 'buscaLargura',
+    titulo: 'BFS',
+    icone: '🔍⬌',
+    requisitos: ['vertice'],
+    mensagemExplicativa: 'Busca em largura (Breadth-First Search) a partir de um vértice.'
+  },
+  {
+    id: 'obterVizinhos',
+    titulo: 'Vizinhos',
+    icone: '👥',
+    requisitos: ['vertice'],
+    mensagemExplicativa: 'Retorna todos os vizinhos de um vértice.'
+  },
+  {
+    id: 'numeroVertices',
+    titulo: 'Nº Vértices',
+    icone: '📊',
+    requisitos: [],
+    mensagemExplicativa: 'Retorna o número total de vértices no grafo.'
+  },
+  {
+    id: 'numeroArestas',
+    titulo: 'Nº Arestas',
+    icone: '📈',
+    requisitos: [],
+    mensagemExplicativa: 'Retorna o número total de arestas no grafo.'
+  },
+  {
+    id: 'limpar',
+    titulo: 'Limpar',
+    icone: '🗑',
+    requisitos: [],
+    mensagemExplicativa: 'Remove todos os vértices e arestas do grafo.'
+  }
+];
+
 /**
- * Retorna estat�sticas do grafo
- *
- * @param grafo - Inst�ncia do grafo
- * @returns Objeto com estat�sticas
+ * Retorna estatísticas do grafo
  */
 export function obterEstatisticas(grafo: Grafo): {
   vertices: number;
@@ -19,8 +97,6 @@ export function obterEstatisticas(grafo: Grafo): {
   const vertices = grafo.numeroVertices();
   const arestas = grafo.numeroArestas();
 
-  // Densidade = E / (V * (V-1)) para direcionado
-  // Densidade = 2E / (V * (V-1)) para n�o-direcionado
   let densidade = 0;
   if (vertices > 1) {
     const maxArestas = grafo.ehDirecionado()
@@ -38,50 +114,7 @@ export function obterEstatisticas(grafo: Grafo): {
 }
 
 /**
- * Formata o grafo para exibi��o
- *
- * @param grafo - Inst�ncia do grafo
- * @returns String representando o grafo
- */
-export function formatarGrafo(grafo: Grafo): string {
-  const vertices = grafo.obterVertices();
-
-  if (vertices.length === 0) {
-    return "Grafo vazio";
-  }
-
-  const linhas = vertices.map((v) => {
-    const vizinhos = grafo.obterVizinhos(v);
-    const vizinhosStr = vizinhos.length > 0 ? vizinhos.join(", ") : "nenhum";
-    return `  ${v} -> [${vizinhosStr}]`;
-  });
-
-  return `Grafo ${grafo.ehDirecionado() ? "direcionado" : "n�o-direcionado"}:\n${linhas.join("\n")}`;
-}
-
-/**
- * Verifica se o grafo � conectado
- * (todos os v�rtices s�o alcan��veis a partir de qualquer v�rtice)
- *
- * @param grafo - Inst�ncia do grafo
- * @returns true se conectado, false caso contr�rio
- */
-export function ehConectado(grafo: Grafo): boolean {
-  const vertices = grafo.obterVertices();
-
-  if (vertices.length === 0) {
-    return true;
-  }
-
-  const alcancaveis = grafo.buscaProfundidade(vertices[0]);
-  return alcancaveis.length === vertices.length;
-}
-
-/**
  * Retorna todas as arestas do grafo
- *
- * @param grafo - Inst�ncia do grafo
- * @returns Array de arestas no formato [origem, destino]
  */
 export function obterArestas(grafo: Grafo): [number, number][] {
   const arestas: [number, number][] = [];
