@@ -3,6 +3,12 @@ import { motion } from 'framer-motion';
 import { useParams, Navigate } from 'react-router-dom';
 import VisualizacaoVetor from '../components/DataStructures/Vetor/VisualizacaoVetor';
 import VisualizacaoPilha from '../components/DataStructures/Pilha/VisualizacaoPilha';
+import { VisualizacaoFila } from '../components/DataStructures/Fila/VisualizacaoFila';
+import { VisualizacaoListaLigada } from '../components/DataStructures/ListaLigada/VisualizacaoListaLigada';
+import { VisualizacaoArvoreBinaria } from '../components/DataStructures/ArvoreBinaria/VisualizacaoArvoreBinaria';
+import { VisualizacaoListaDupla } from '../components/DataStructures/ListaDuplamenteLigada/VisualizacaoListaDupla';
+import { VisualizacaoMatriz } from '../components/DataStructures/Matriz/VisualizacaoMatriz';
+import { VisualizacaoGrafo } from '../components/DataStructures/Grafo/VisualizacaoGrafo';
 // import { DataStructureProvider } from '../context/DataStructureContext'; // Não é mais necessário
 
 export function StructurePage() {
@@ -21,6 +27,18 @@ export function StructurePage() {
         return <VisualizacaoVetor />;
       case 'pilha':
         return <VisualizacaoPilha />;
+      case 'fila':
+        return <VisualizacaoFila />;
+      case 'lista-ligada':
+        return <VisualizacaoListaLigada />;
+      case 'arvore-binaria':
+        return <VisualizacaoArvoreBinaria />;
+      case 'lista-duplamente-ligada':
+        return <VisualizacaoListaDupla />;
+      case 'matriz':
+        return <VisualizacaoMatriz />;
+      case 'grafo':
+        return <VisualizacaoGrafo />;
       default:
         return (
           <div className="min-h-screen bg-slate-950 flex items-center justify-center">
