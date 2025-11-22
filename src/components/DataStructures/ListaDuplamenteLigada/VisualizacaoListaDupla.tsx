@@ -1,10 +1,31 @@
-import React, { useState } from "react";
-import { useListaDupla } from "./useListaDupla";
+/**
+ * Componente VisualizacaoListaDupla
+ *
+ * @remarks
+ * Interface principal para visualiza√ß√£o e manipula√ß√£o da estrutura de dados Lista Duplamente Ligada.
+ * Permite executar opera√ß√µes com feedback visual em tempo real.
+ */
+
+import * as React from 'react';
+import { useListaDupla } from './useListaDupla';
+import { useNavigate } from 'react-router-dom';
+import { ChevronLeft } from 'lucide-react';
+import { Button } from '../../ui/Button';
+import { metodosDisponiveis, type MetodoListaDupla } from './metodosListaDupla';
+
+interface HistoricoOperacao {
+  operacao: string;
+  timestamp: number;
+  status: 'success' | 'error';
+}
 
 /**
- * Componente para visualizar e interagir com Lista Duplamente Ligada
+ * Componente principal de visualiza√ß√£o da Lista Duplamente Ligada
+ *
+ * @returns Elemento React com a interface completa da Lista Duplamente Ligada
  */
 export function VisualizacaoListaDupla() {
+  const navigate = useNavigate();
   const {
     inserirNoInicio,
     inserirNoFim,
@@ -19,405 +40,360 @@ export function VisualizacaoListaDupla() {
     limpar,
     info,
     nosVisuais,
-    mensagem,
-    erro,
   } = useListaDupla();
 
-  const [inputValor, setInputValor] = useState("");
-  const [inputIndice, setInputIndice] = useState("");
-  const [inputBusca, setInputBusca] = useState("");
-  const [inputAtualizarIndice, setInputAtualizarIndice] = useState("");
-  const [inputAtualizarValor, setInputAtualizarValor] = useState("");
+  const [metodoAtual, setMetodoAtual] = React.useState<string | null>(null);
+  const [valor, setValor] = React.useState('');
+  const [indice, setIndice] = React.useState('');
+  const [mensagemAcao, setMensagemAcao] = React.useState('');
+  const [historico, setHistorico] = React.useState<HistoricoOperacao[]>([]);
+  const [indiceDestacado, setIndiceDestacado] = React.useState<number | null>(null);
 
-  const handleInserirInicio = () => {
-    const valor = parseInt(inputValor);
-    if (!isNaN(valor)) {
-      inserirNoInicio(valor);
-      setInputValor("");
-    }
-  };
+  const capacidadeMaxima = 1000;
 
-  const handleInserirFim = () => {
-    const valor = parseInt(inputValor);
-    if (!isNaN(valor)) {
-      inserirNoFim(valor);
-      setInputValor("");
-    }
-  };
+  const registrarOperacao = React.useCallback((operacao: string, status: 'success' | 'error' = 'success') => {
+    setHistorico((prev) => [
+      ...prev,
+      {
+        operacao,
+        timestamp: Date.now(),
+        status,
+      },
+    ]);
+  }, []);
 
-  const handleInserirPosicao = () => {
-    const valor = parseInt(inputValor);
-    const indice = parseInt(inputIndice);
-    if (!isNaN(valor) && !isNaN(indice)) {
-      inserirNaPosicao(indice, valor);
-      setInputValor("");
-      setInputIndice("");
-    }
-  };
+  /**
+   * Manipula a execu√ß√£o de um m√©todo da lista
+   *
+   * @param e - Evento de submit do formul√°rio
+   */
+  const executar = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  const handleBuscar = () => {
-    const valor = parseInt(inputBusca);
-    if (!isNaN(valor)) {
-      buscar(valor);
-    }
-  };
+    try {
+      const metodoInfo = metodosDisponiveis.find((m) => m.id === metodoAtual);
+      if (!metodoInfo) return;
 
-  const handleAtualizar = () => {
-    const indice = parseInt(inputAtualizarIndice);
-    const valor = parseInt(inputAtualizarValor);
-    if (!isNaN(indice) && !isNaN(valor)) {
-      atualizar(indice, valor);
-      setInputAtualizarIndice("");
-      setInputAtualizarValor("");
-    }
-  };
+      let mensagemSucesso = '';
+      let destacar: number | null = null;
 
-  const handleObterPorIndice = () => {
-    const indice = parseInt(inputAtualizarIndice);
-    if (!isNaN(indice)) {
-      obterPorIndice(indice);
+      switch (metodoAtual) {
+        case 'inserirNoInicio': {
+          const v = parseInt(valor);
+          if (isNaN(v)) throw new Error('Valor inv√°lido');
+          inserirNoInicio(v);
+          mensagemSucesso = `Valor ${v} inserido no in√≠cio`;
+          destacar = 0;
+          break;
+        }
+        case 'inserirNoFim': {
+          const v = parseInt(valor);
+          if (isNaN(v)) throw new Error('Valor inv√°lido');
+          inserirNoFim(v);
+          mensagemSucesso = `Valor ${v} inserido no fim`;
+          destacar = info.tamanho; // Ser√° o novo √∫ltimo √≠ndice
+          break;
+        }
+        case 'inserirNaPosicao': {
+          const v = parseInt(valor);
+          const i = parseInt(indice);
+          if (isNaN(v) || isNaN(i)) throw new Error('Valor ou √≠ndice inv√°lido');
+          inserirNaPosicao(i, v);
+          mensagemSucesso = `Valor ${v} inserido na posi√ß√£o ${i}`;
+          destacar = i;
+          break;
+        }
+        case 'removerDoInicio': {
+          const resultado = removerDoInicio();
+          if (resultado !== null) {
+            mensagemSucesso = `Valor ${resultado} removido do in√≠cio`;
+          } else {
+            throw new Error('Lista vazia');
+          }
+          break;
+        }
+        case 'removerDoFim': {
+          const resultado = removerDoFim();
+          if (resultado !== null) {
+            mensagemSucesso = `Valor ${resultado} removido do fim`;
+          } else {
+            throw new Error('Lista vazia');
+          }
+          break;
+        }
+        case 'removerDaPosicao': {
+          const i = parseInt(indice);
+          if (isNaN(i)) throw new Error('√çndice inv√°lido');
+          const resultado = removerDaPosicao(i);
+          if (resultado !== null) {
+            mensagemSucesso = `Valor ${resultado} removido da posi√ß√£o ${i}`;
+          } else {
+            throw new Error('Posi√ß√£o inv√°lida');
+          }
+          break;
+        }
+        case 'buscar': {
+          const v = parseInt(valor);
+          if (isNaN(v)) throw new Error('Valor inv√°lido');
+          const resultado = buscar(v);
+          if (resultado !== -1) {
+            mensagemSucesso = `Valor ${v} encontrado na posi√ß√£o ${resultado}`;
+            destacar = resultado;
+          } else {
+            mensagemSucesso = `Valor ${v} n√£o encontrado na lista`;
+          }
+          break;
+        }
+        case 'obterPorIndice': {
+          const i = parseInt(indice);
+          if (isNaN(i)) throw new Error('√çndice inv√°lido');
+          const resultado = obterPorIndice(i);
+          if (resultado !== null) {
+            mensagemSucesso = `Valor na posi√ß√£o ${i}: ${resultado}`;
+            destacar = i;
+          } else {
+            throw new Error('√çndice fora dos limites');
+          }
+          break;
+        }
+        case 'atualizar': {
+          const v = parseInt(valor);
+          const i = parseInt(indice);
+          if (isNaN(v) || isNaN(i)) throw new Error('Valor ou √≠ndice inv√°lido');
+          atualizar(i, v);
+          mensagemSucesso = `Posi√ß√£o ${i} atualizada para ${v}`;
+          destacar = i;
+          break;
+        }
+        case 'inverter':
+          inverter();
+          mensagemSucesso = 'Lista invertida com sucesso';
+          break;
+        case 'tamanho':
+          mensagemSucesso = `Tamanho da lista: ${info.tamanho}`;
+          break;
+        case 'limpar':
+          limpar();
+          mensagemSucesso = 'Lista limpa com sucesso';
+          break;
+        default:
+          mensagemSucesso = 'Opera√ß√£o realizada com sucesso';
+      }
+
+      registrarOperacao(mensagemSucesso, 'success');
+      setMensagemAcao(mensagemSucesso);
+      setIndiceDestacado(destacar);
+
+      // Limpar inputs
+      setValor('');
+      setIndice('');
+
+      // Limpar destaque ap√≥s 1.5s
+      setTimeout(() => {
+        setIndiceDestacado(null);
+      }, 1500);
+    } catch (error: unknown) {
+      let mensagemErro = 'Erro desconhecido';
+      if (typeof error === 'string') {
+        mensagemErro = `Erro: ${error}`;
+      } else if (error instanceof Error) {
+        mensagemErro = `Erro: ${error.message}`;
+      }
+
+      registrarOperacao(mensagemErro, 'error');
+      setMensagemAcao(mensagemErro);
     }
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">
-        Lista Duplamente Ligada
-      </h2>
+    <div className="p-4 bg-gray-900 text-white min-h-screen">
+      {/* Cabe√ßalho com navega√ß√£o */}
+      <div className="mb-6 flex justify-between items-center">
+        <Button onClick={() => navigate(-1)} aria-label="Voltar">
+          <ChevronLeft className="mr-2 h-4 w-4" />
+          Voltar
+        </Button>
+        <Button onClick={() => window.close()} variant="destructive" aria-label="Sair">
+          Sair
+        </Button>
+      </div>
 
-      {/* Mensagens */}
-      {mensagem && (
-        <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-          {mensagem}
-        </div>
-      )}
-      {erro && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {erro}
-        </div>
-      )}
+      {/* T√≠tulo e descri√ß√£o */}
+      <h1 className="text-xl font-bold mt-4">Lista Duplamente Ligada</h1>
+      <p className="mt-4">Estrutura de dados linear com navega√ß√£o bidirecional entre n√≥s.</p>
+      <span className="text-cyan-400">12 m√©todos dispon√≠veis</span>
 
-      {/* VisualizaÁ„o da Lista */}
-      <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-        <h3 className="text-lg font-semibold mb-3 text-gray-700">
-          VisualizaÁ„o
-        </h3>
-        {info.estaVazia ? (
-          <div className="text-center text-gray-500 py-8">
-            Lista vazia - Insira elementos para comeÁar
-          </div>
-        ) : (
-          <div className="flex items-center justify-start overflow-x-auto pb-4">
-            <div className="flex items-center space-x-2">
-              {nosVisuais.map((no, idx) => (
-                <React.Fragment key={idx}>
-                  {/* NÛ */}
-                  <div className="flex flex-col items-center">
-                    {/* Indicador de CabeÁa/Cauda */}
-                    <div className="h-6 mb-1">
-                      {no.isHead && (
-                        <span className="text-xs font-semibold text-blue-600">
-                          HEAD
-                        </span>
-                      )}
-                      {no.isTail && (
-                        <span className="text-xs font-semibold text-green-600">
-                          TAIL
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Caixa do NÛ */}
-                    <div
-                      className={`
-                        border-2 rounded-lg p-3 min-w-[80px] text-center
-                        ${no.isHead ? "border-blue-500 bg-blue-50" : ""}
-                        ${no.isTail ? "border-green-500 bg-green-50" : ""}
-                        ${!no.isHead && !no.isTail ? "border-gray-400 bg-white" : ""}
-                      `}
-                    >
-                      <div className="font-bold text-lg">{no.valor}</div>
-                      <div className="text-xs text-gray-500">
-                        Ìndice: {no.indice}
-                      </div>
-                    </div>
-
-                    {/* Setas de navegaÁ„o */}
-                    <div className="flex items-center mt-1 text-xs text-gray-500">
-                      <span>{no.hasPrev ? "ê" : " "}</span>
-                      <span className="mx-1">prev/next</span>
-                      <span>{no.hasNext ? "í" : " "}</span>
-                    </div>
+      {/* Visualiza√ß√£o da lista (horizontal) */}
+      <div className="mb-6 bg-gray-800 p-4 rounded-lg overflow-x-auto">
+        <ul className="flex flex-row gap-2 min-h-[120px] items-center justify-start" role="list">
+          {nosVisuais.length > 0 ? (
+            nosVisuais.map((no, idx) => (
+              <React.Fragment key={idx}>
+                {/* N√≥ */}
+                <li
+                  role="listitem"
+                  className={`
+                    flex flex-col items-center p-3 rounded-lg border-2 min-w-[100px] transition-all duration-300
+                    ${indiceDestacado === idx ? 'bg-yellow-400 text-gray-900 border-yellow-600 scale-110' : 'bg-gray-700 text-white border-gray-600'}
+                    ${no.isHead ? 'border-green-400' : ''}
+                    ${no.isTail ? 'border-purple-400' : ''}
+                  `}
+                  aria-label={`Elemento ${no.valor} na posi√ß√£o ${idx}${no.isHead ? ', cabe√ßa da lista' : ''}${no.isTail ? ', cauda da lista' : ''}`}
+                >
+                  {/* Indicadores de cabe√ßa/cauda */}
+                  <div className="h-5 mb-1 text-xs font-semibold">
+                    {no.isHead && <span className="text-green-400">HEAD</span>}
+                    {no.isTail && <span className="text-purple-400">TAIL</span>}
                   </div>
 
-                  {/* Setas Bidirecionais entre nÛs */}
-                  {no.hasNext && (
-                    <div className="flex flex-col items-center mx-2">
-                      <div className="text-2xl text-gray-400">ƒ</div>
-                      <div className="text-xs text-gray-400">dupla</div>
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        )}
+                  {/* Valor */}
+                  <div className="font-bold text-lg mb-1">{no.valor}</div>
 
-        {/* InformaÁıes da Lista */}
-        <div className="mt-4 p-3 bg-white border border-gray-200 rounded">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-            <div>
-              <span className="font-semibold">Tamanho:</span> {info.tamanho}
-            </div>
-            <div>
-              <span className="font-semibold">Primeiro:</span>{" "}
-              {info.primeiro ?? "N/A"}
-            </div>
-            <div>
-              <span className="font-semibold">⁄ltimo:</span>{" "}
-              {info.ultimo ?? "N/A"}
-            </div>
-            <div>
-              <span className="font-semibold">Status:</span>{" "}
-              {info.estaVazia ? "Vazia" : "Com elementos"}
-            </div>
-          </div>
-          {!info.estaVazia && (
-            <div className="mt-2 text-sm">
-              <span className="font-semibold">Array:</span> [{info.elementos.join(", ")}]
-            </div>
+                  {/* √çndice */}
+                  <div className="text-xs text-gray-400">idx: {no.indice}</div>
+
+                  {/* Indicadores prev/next */}
+                  <div className="flex items-center mt-1 text-xs text-gray-400">
+                    <span>{no.hasPrev ? '‚Üê' : ' '}</span>
+                    <span className="mx-1">‚ü∑</span>
+                    <span>{no.hasNext ? '‚Üí' : ' '}</span>
+                  </div>
+                </li>
+
+                {/* Setas bidirecionais entre n√≥s */}
+                {no.hasNext && (
+                  <div className="flex items-center text-gray-400 text-xl">
+                    ‚ü∑
+                  </div>
+                )}
+              </React.Fragment>
+            ))
+          ) : (
+            <li role="listitem" className="text-gray-400 text-center py-8 w-full">
+              Lista vazia. Use Inserir In√≠cio/Fim para adicionar elementos.
+            </li>
           )}
-        </div>
+        </ul>
       </div>
 
-      {/* Controles */}
-      <div className="space-y-4">
-        {/* Inserir */}
-        <div className="p-4 bg-blue-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-3 text-blue-800">
-            Inserir Elemento
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <input
-                type="number"
-                value={inputValor}
-                onChange={(e) => setInputValor(e.target.value)}
-                placeholder="Valor (-1000 a 1000)"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-              <div className="flex gap-2">
-                <button
-                  onClick={handleInserirInicio}
-                  className="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Inserir no InÌcio
-                </button>
-                <button
-                  onClick={handleInserirFim}
-                  className="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Inserir no Fim
-                </button>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  value={inputIndice}
-                  onChange={(e) => setInputIndice(e.target.value)}
-                  placeholder="Õndice"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                />
-                <input
-                  type="number"
-                  value={inputValor}
-                  onChange={(e) => setInputValor(e.target.value)}
-                  placeholder="Valor"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                />
-              </div>
-              <button
-                onClick={handleInserirPosicao}
-                className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Inserir na PosiÁ„o
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Remover */}
-        <div className="p-4 bg-red-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-3 text-red-800">
-            Remover Elemento
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-            <button
-              onClick={removerDoInicio}
-              disabled={info.estaVazia}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
-            >
-              Remover do InÌcio
-            </button>
-            <button
-              onClick={removerDoFim}
-              disabled={info.estaVazia}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
-            >
-              Remover do Fim
-            </button>
-            <div className="flex gap-2">
-              <input
-                type="number"
-                value={inputIndice}
-                onChange={(e) => setInputIndice(e.target.value)}
-                placeholder="Õndice"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-              />
-              <button
-                onClick={() => {
-                  const indice = parseInt(inputIndice);
-                  if (!isNaN(indice)) {
-                    removerDaPosicao(indice);
-                    setInputIndice("");
-                  }
-                }}
-                disabled={info.estaVazia}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
-              >
-                Remover
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Buscar e Atualizar */}
-        <div className="p-4 bg-green-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-3 text-green-800">
-            Buscar e Atualizar
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="flex gap-2">
-              <input
-                type="number"
-                value={inputBusca}
-                onChange={(e) => setInputBusca(e.target.value)}
-                placeholder="Valor para buscar"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-              />
-              <button
-                onClick={handleBuscar}
-                disabled={info.estaVazia}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
-              >
-                Buscar
-              </button>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="number"
-                value={inputAtualizarIndice}
-                onChange={(e) => setInputAtualizarIndice(e.target.value)}
-                placeholder="Õndice"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-              />
-              <input
-                type="number"
-                value={inputAtualizarValor}
-                onChange={(e) => setInputAtualizarValor(e.target.value)}
-                placeholder="Novo Valor"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-              />
-              <button
-                onClick={handleAtualizar}
-                disabled={info.estaVazia}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
-              >
-                Atualizar
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* OperaÁıes Especiais */}
-        <div className="p-4 bg-purple-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-3 text-purple-800">
-            OperaÁıes Especiais
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <button
-              onClick={inverter}
-              disabled={info.tamanho <= 1}
-              className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
-            >
-              Inverter Lista
-            </button>
-            <button
-              onClick={limpar}
-              disabled={info.estaVazia}
-              className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
-            >
-              Limpar Lista
-            </button>
-          </div>
-        </div>
+      {/* Grid de m√©todos */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-6">
+        {metodosDisponiveis.map((metodo) => (
+          <button
+            key={metodo.id}
+            onClick={() => setMetodoAtual(metodo.id)}
+            className={`p-2 rounded text-left flex items-center gap-2 ${
+              metodoAtual === metodo.id ? 'bg-cyan-600' : 'bg-gray-700'
+            } hover:bg-cyan-500 transition-colors`}
+            aria-label={`Selecionar m√©todo ${metodo.titulo}`}
+          >
+            <span role="img" aria-hidden="true">
+              {metodo.icone}
+            </span>
+            <span>{metodo.titulo}</span>
+          </button>
+        ))}
       </div>
 
-      {/* EstatÌsticas */}
-      {!info.estaVazia && info.min !== null && (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-3 text-gray-700">
-            EstatÌsticas
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-            <div>
-              <span className="font-semibold">MÌnimo:</span> {info.min}
-            </div>
-            <div>
-              <span className="font-semibold">M·ximo:</span> {info.max}
-            </div>
-            <div>
-              <span className="font-semibold">Soma:</span> {info.soma}
-            </div>
-            <div>
-              <span className="font-semibold">MÈdia:</span>{" "}
-              {info.media?.toFixed(2)}
-            </div>
-          </div>
+      {/* Formul√°rio de execu√ß√£o */}
+      {metodoAtual && (
+        <div className="mb-6 bg-gray-800 p-4 rounded">
+          <p className="text-gray-300 mb-4">
+            {metodosDisponiveis.find((m) => m.id === metodoAtual)?.mensagemExplicativa}
+          </p>
+          <form onSubmit={executar} className="flex flex-wrap md:flex-nowrap items-center gap-4">
+            {/* Input de √≠ndice (quando necess√°rio) */}
+            {metodosDisponiveis.find((m) => m.id === metodoAtual)?.requisitos.includes('indice') && (
+              <input
+                type="text"
+                value={indice}
+                onChange={(e) => setIndice(e.target.value)}
+                placeholder="√çndice (0-based)"
+                className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                aria-label="√çndice do elemento"
+              />
+            )}
+
+            {/* Input de valor (quando necess√°rio) */}
+            {metodosDisponiveis.find((m) => m.id === metodoAtual)?.requisitos.includes('valor') && (
+              <input
+                type="text"
+                value={valor}
+                onChange={(e) => setValor(e.target.value)}
+                placeholder="Valor (n√∫mero inteiro)"
+                className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                aria-label="Valor do elemento"
+              />
+            )}
+
+            {/* Bot√£o de executar */}
+            <button
+              type="submit"
+              className="bg-cyan-500 text-white px-4 py-2 rounded hover:bg-cyan-600 transition-colors font-semibold"
+              aria-label="Executar opera√ß√£o"
+            >
+              Executar
+            </button>
+          </form>
         </div>
       )}
 
-      {/* InformaÁıes Adicionais */}
-      <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-        <h3 className="text-lg font-semibold mb-2 text-yellow-800">
-          9 CaracterÌsticas da Lista Duplamente Ligada
-        </h3>
-        <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-          <li>
-            <strong>NavegaÁ„o Bidirecional:</strong> Cada nÛ tem referÍncia para
-            o prÛximo E anterior
-          </li>
-          <li>
-            <strong>InserÁ„o/RemoÁ„o no InÌcio:</strong> O(1) - muito eficiente
-          </li>
-          <li>
-            <strong>InserÁ„o/RemoÁ„o no Fim:</strong> O(1) - graÁas ao ponteiro
-            de cauda
-          </li>
-          <li>
-            <strong>Busca por Õndice:</strong> O(n/2) - pode buscar da cabeÁa ou
-            cauda
-          </li>
-          <li>
-            <strong>Vantagem:</strong> RemoÁ„o e navegaÁ„o reversa mais
-            eficientes
-          </li>
-          <li>
-            <strong>Desvantagem:</strong> Usa mais memÛria (2 ponteiros por nÛ)
-          </li>
-        </ul>
+      {/* Mensagem de feedback */}
+      {mensagemAcao && (
+        <div className="mb-6 bg-gray-800 p-3 rounded">
+          <p
+            className={`${mensagemAcao.startsWith('Erro') ? 'text-red-400' : 'text-green-400'}`}
+            role="alert"
+          >
+            {mensagemAcao}
+          </p>
+        </div>
+      )}
+
+      {/* Informa√ß√µes de estado */}
+      <div className="flex flex-wrap md:flex-nowrap gap-4 mb-6">
+        <div className="flex-1 bg-gray-800 p-3 rounded flex items-center justify-between min-w-[150px]">
+          <span className="text-cyan-400">Tamanho:</span>
+          <span className="font-bold">{info.tamanho}</span>
+        </div>
+        <div className="flex-1 bg-gray-800 p-3 rounded flex items-center justify-between min-w-[150px]">
+          <span className="text-cyan-400">Primeiro:</span>
+          <span className="font-bold">{info.primeiro ?? 'N/A'}</span>
+        </div>
+        <div className="flex-1 bg-gray-800 p-3 rounded flex items-center justify-between min-w-[150px]">
+          <span className="text-cyan-400">√öltimo:</span>
+          <span className="font-bold">{info.ultimo ?? 'N/A'}</span>
+        </div>
+        <div className="flex-1 bg-gray-800 p-3 rounded flex items-center justify-between min-w-[150px]">
+          <span className="text-cyan-400">Estado:</span>
+          <span className="font-bold">{info.estaVazia ? 'Vazio' : 'Com elementos'}</span>
+        </div>
+      </div>
+
+      {/* Hist√≥rico de opera√ß√µes */}
+      <div className="bg-gray-800 p-4 rounded">
+        <h3 className="text-lg font-bold mb-3">Hist√≥rico de Opera√ß√µes</h3>
+        <div className="space-y-2 max-h-40 overflow-y-auto">
+          {historico.length > 0 ? (
+            historico.map((op, index) => (
+              <div
+                key={index}
+                className={`p-2 rounded ${
+                  op.status === 'error' ? 'bg-red-900/30 border-l-4 border-red-500' : 'bg-gray-700'
+                }`}
+              >
+                <div className="flex justify-between items-center">
+                  <span>{op.operacao}</span>
+                  <span className="text-xs text-gray-400">
+                    {new Date(op.timestamp).toLocaleTimeString()}
+                  </span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-400 text-center py-2">Nenhuma opera√ß√£o executada ainda</p>
+          )}
+        </div>
       </div>
     </div>
   );
