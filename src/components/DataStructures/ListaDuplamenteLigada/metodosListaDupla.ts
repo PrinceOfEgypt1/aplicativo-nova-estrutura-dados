@@ -2,6 +2,8 @@
  * Metadados e configurações dos métodos da Lista Duplamente Ligada
  */
 
+import { ListaDuplamenteLigada } from "./listaDupla";
+
 export interface MetodoListaDupla {
   id: string;
   titulo: string;
@@ -96,3 +98,49 @@ export const metodosDisponiveis: MetodoListaDupla[] = [
     mensagemExplicativa: 'Remove todos os elementos da lista.'
   }
 ];
+
+/**
+ * Formata a lista para exibição
+ */
+export function formatarLista(lista: ListaDuplamenteLigada): string {
+  if (lista.estaVazia()) {
+    return "Lista vazia: null";
+  }
+  const elementos = lista.paraArray();
+  return `[${elementos.join(" <-> ")}]`;
+}
+
+/**
+ * Retorna estatísticas da lista
+ */
+export function obterEstatisticas(lista: ListaDuplamenteLigada): {
+  tamanho: number;
+  min: number | null;
+  max: number | null;
+  soma: number;
+  media: number | null;
+} {
+  if (lista.estaVazia()) {
+    return {
+      tamanho: 0,
+      min: null,
+      max: null,
+      soma: 0,
+      media: null,
+    };
+  }
+
+  const elementos = lista.paraArray();
+  const min = Math.min(...elementos);
+  const max = Math.max(...elementos);
+  const soma = elementos.reduce((acc, val) => acc + val, 0);
+  const media = soma / elementos.length;
+
+  return {
+    tamanho: lista.tamanho(),
+    min,
+    max,
+    soma,
+    media,
+  };
+}
