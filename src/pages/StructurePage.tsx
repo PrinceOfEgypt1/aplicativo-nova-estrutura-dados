@@ -33,6 +33,7 @@ export function StructurePage() {
         return <VisualizacaoListaLigada />;
       case 'arvore-binaria':
         return <VisualizacaoArvoreBinaria />;
+      case 'lista-dupla':
       case 'lista-duplamente-ligada':
         return <VisualizacaoListaDupla />;
       case 'matriz':
