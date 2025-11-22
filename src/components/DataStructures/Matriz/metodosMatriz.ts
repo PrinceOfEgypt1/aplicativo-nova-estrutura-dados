@@ -1,13 +1,91 @@
 import { Matriz } from "./matriz";
 
 /**
- * Métodos auxiliares para Matriz
+ * Metadados e configuraÃ§Ãµes dos mÃ©todos da Matriz
+ */
+
+export interface MetodoMatriz {
+  id: string;
+  titulo: string;
+  icone: string;
+  requisitos: ('linha' | 'coluna' | 'valor' | 'escalar' | 'novasLinhas' | 'novasColunas')[];
+  mensagemExplicativa: string;
+}
+
+export const metodosDisponiveis: MetodoMatriz[] = [
+  {
+    id: 'definir',
+    titulo: 'Definir',
+    icone: 'ğŸ“',
+    requisitos: ['linha', 'coluna', 'valor'],
+    mensagemExplicativa: 'Define um valor em uma posiÃ§Ã£o especÃ­fica da matriz [linha][coluna].'
+  },
+  {
+    id: 'obter',
+    titulo: 'Obter',
+    icone: 'ğŸ‘',
+    requisitos: ['linha', 'coluna'],
+    mensagemExplicativa: 'ObtÃ©m o valor de uma posiÃ§Ã£o especÃ­fica da matriz.'
+  },
+  {
+    id: 'preencher',
+    titulo: 'Preencher Tudo',
+    icone: 'ğŸ¨',
+    requisitos: ['valor'],
+    mensagemExplicativa: 'Preenche toda a matriz com um valor especÃ­fico.'
+  },
+  {
+    id: 'preencherLinha',
+    titulo: 'Preencher Linha',
+    icone: 'â¡',
+    requisitos: ['linha', 'valor'],
+    mensagemExplicativa: 'Preenche uma linha especÃ­fica com um valor.'
+  },
+  {
+    id: 'preencherColuna',
+    titulo: 'Preencher Coluna',
+    icone: 'â¬‡',
+    requisitos: ['coluna', 'valor'],
+    mensagemExplicativa: 'Preenche uma coluna especÃ­fica com um valor.'
+  },
+  {
+    id: 'transpor',
+    titulo: 'Transpor',
+    icone: 'ğŸ”„',
+    requisitos: [],
+    mensagemExplicativa: 'TranspÃµe a matriz (inverte linhas e colunas).'
+  },
+  {
+    id: 'multiplicarPorEscalar',
+    titulo: 'Mult. Escalar',
+    icone: 'âœ–',
+    requisitos: ['escalar'],
+    mensagemExplicativa: 'Multiplica todos os elementos da matriz por um escalar.'
+  },
+  {
+    id: 'redimensionar',
+    titulo: 'Redimensionar',
+    icone: 'ğŸ“',
+    requisitos: ['novasLinhas', 'novasColunas'],
+    mensagemExplicativa: 'Redimensiona a matriz (cria nova matriz com dimensÃµes diferentes).'
+  },
+  {
+    id: 'limpar',
+    titulo: 'Limpar',
+    icone: 'ğŸ—‘',
+    requisitos: [],
+    mensagemExplicativa: 'Limpa a matriz (preenche tudo com zeros).'
+  }
+];
+
+/**
+ * MÃ©todos auxiliares para Matriz
  */
 
 /**
  * Cria uma matriz identidade (apenas para matrizes quadradas)
  *
- * @param tamanho - Tamanho da matriz (n × n)
+ * @param tamanho - Tamanho da matriz (n ï¿½ n)
  * @returns Nova matriz identidade
  */
 export function criarMatrizIdentidade(tamanho: number): Matriz {
@@ -28,16 +106,16 @@ export function criarMatrizIdentidade(tamanho: number): Matriz {
  */
 export function criarMatrizDoArray(dados: number[][]): Matriz {
   if (dados.length === 0 || dados[0].length === 0) {
-    throw new Error("Array não pode ser vazio");
+    throw new Error("Array nï¿½o pode ser vazio");
   }
 
   const linhas = dados.length;
   const colunas = dados[0].length;
 
-  // Validação: todas as linhas devem ter o mesmo número de colunas
+  // Validaï¿½ï¿½o: todas as linhas devem ter o mesmo nï¿½mero de colunas
   for (const linha of dados) {
     if (linha.length !== colunas) {
-      throw new Error("Todas as linhas devem ter o mesmo número de colunas");
+      throw new Error("Todas as linhas devem ter o mesmo nï¿½mero de colunas");
     }
   }
 
@@ -53,11 +131,11 @@ export function criarMatrizDoArray(dados: number[][]): Matriz {
 }
 
 /**
- * Verifica se duas matrizes são iguais
+ * Verifica se duas matrizes sï¿½o iguais
  *
  * @param matriz1 - Primeira matriz
  * @param matriz2 - Segunda matriz
- * @returns true se as matrizes forem iguais, false caso contrário
+ * @returns true se as matrizes forem iguais, false caso contrï¿½rio
  */
 export function matrizesIguais(matriz1: Matriz, matriz2: Matriz): boolean {
   if (
@@ -82,10 +160,10 @@ export function matrizesIguais(matriz1: Matriz, matriz2: Matriz): boolean {
 }
 
 /**
- * Retorna estatísticas da matriz
+ * Retorna estatï¿½sticas da matriz
  *
- * @param matriz - Instância da matriz
- * @returns Objeto com estatísticas
+ * @param matriz - Instï¿½ncia da matriz
+ * @returns Objeto com estatï¿½sticas
  */
 export function obterEstatisticas(matriz: Matriz): {
   linhas: number;
@@ -118,9 +196,9 @@ export function obterEstatisticas(matriz: Matriz): {
 }
 
 /**
- * Formata a matriz para exibição
+ * Formata a matriz para exibiï¿½ï¿½o
  *
- * @param matriz - Instância da matriz
+ * @param matriz - Instï¿½ncia da matriz
  * @returns String representando a matriz
  */
 export function formatarMatriz(matriz: Matriz): string {

@@ -1,12 +1,34 @@
-import React, { useState } from "react";
-import { useMatriz } from "./useMatriz";
+/**
+ * Componente VisualizacaoMatriz
+ *
+ * @remarks
+ * Interface principal para visualização e manipulação da estrutura de dados Matriz.
+ * Permite executar operações matriciais com feedback visual em tempo real.
+ */
+
+import * as React from 'react';
+import { useMatriz } from './useMatriz';
+import { useNavigate } from 'react-router-dom';
+import { ChevronLeft } from 'lucide-react';
+import { Button } from '../../ui/Button';
+import { metodosDisponiveis, type MetodoMatriz } from './metodosMatriz';
+
+interface HistoricoOperacao {
+  operacao: string;
+  timestamp: number;
+  status: 'success' | 'error';
+}
 
 /**
- * Componente para visualizar e interagir com Matriz
+ * Componente principal de visualização da Matriz
+ *
+ * @returns Elemento React com a interface completa da Matriz
  */
 export function VisualizacaoMatriz() {
+  const navigate = useNavigate();
   const {
     definir,
+    obter,
     preencher,
     preencherLinha,
     preencherColuna,
@@ -15,308 +37,353 @@ export function VisualizacaoMatriz() {
     limpar,
     redimensionar,
     info,
-    mensagem,
-    erro,
   } = useMatriz(3, 3);
 
-  const [linhaInput, setLinhaInput] = useState("");
-  const [colunaInput, setColunaInput] = useState("");
-  const [valorInput, setValorInput] = useState("");
-  const [escalarInput, setEscalarInput] = useState("");
-  const [novasLinhas, setNovasLinhas] = useState("");
-  const [novasColunas, setNovasColunas] = useState("");
+  const [metodoAtual, setMetodoAtual] = React.useState<string | null>(null);
+  const [linha, setLinha] = React.useState('');
+  const [coluna, setColuna] = React.useState('');
+  const [valor, setValor] = React.useState('');
+  const [escalar, setEscalar] = React.useState('');
+  const [novasLinhas, setNovasLinhas] = React.useState('');
+  const [novasColunas, setNovasColunas] = React.useState('');
+  const [mensagemAcao, setMensagemAcao] = React.useState('');
+  const [historico, setHistorico] = React.useState<HistoricoOperacao[]>([]);
+  const [celulaDestacada, setCelulaDestacada] = React.useState<[number, number] | null>(null);
 
-  const handleDefinir = () => {
-    const linha = parseInt(linhaInput);
-    const coluna = parseInt(colunaInput);
-    const valor = parseInt(valorInput);
-    if (!isNaN(linha) && !isNaN(coluna) && !isNaN(valor)) {
-      definir(linha, coluna, valor);
-      setValorInput("");
-    }
-  };
+  const registrarOperacao = React.useCallback((operacao: string, status: 'success' | 'error' = 'success') => {
+    setHistorico((prev) => [
+      ...prev,
+      {
+        operacao,
+        timestamp: Date.now(),
+        status,
+      },
+    ]);
+  }, []);
 
-  const handlePreencher = () => {
-    const valor = parseInt(valorInput);
-    if (!isNaN(valor)) {
-      preencher(valor);
-      setValorInput("");
-    }
-  };
+  /**
+   * Manipula a execução de um método da matriz
+   *
+   * @param e - Evento de submit do formulário
+   */
+  const executar = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  const handlePreencherLinha = () => {
-    const linha = parseInt(linhaInput);
-    const valor = parseInt(valorInput);
-    if (!isNaN(linha) && !isNaN(valor)) {
-      preencherLinha(linha, valor);
-      setValorInput("");
-    }
-  };
+    try {
+      const metodoInfo = metodosDisponiveis.find((m) => m.id === metodoAtual);
+      if (!metodoInfo) return;
 
-  const handlePreencherColuna = () => {
-    const coluna = parseInt(colunaInput);
-    const valor = parseInt(valorInput);
-    if (!isNaN(coluna) && !isNaN(valor)) {
-      preencherColuna(coluna, valor);
-      setValorInput("");
-    }
-  };
+      let mensagemSucesso = '';
+      let destacar: [number, number] | null = null;
 
-  const handleMultiplicar = () => {
-    const escalar = parseInt(escalarInput);
-    if (!isNaN(escalar)) {
-      multiplicarPorEscalar(escalar);
-      setEscalarInput("");
-    }
-  };
+      switch (metodoAtual) {
+        case 'definir': {
+          const l = parseInt(linha);
+          const c = parseInt(coluna);
+          const v = parseInt(valor);
+          if (isNaN(l) || isNaN(c) || isNaN(v)) throw new Error('Parâmetros inválidos');
+          definir(l, c, v);
+          mensagemSucesso = `Valor ${v} definido em [${l}][${c}]`;
+          destacar = [l, c];
+          break;
+        }
+        case 'obter': {
+          const l = parseInt(linha);
+          const c = parseInt(coluna);
+          if (isNaN(l) || isNaN(c)) throw new Error('Linha ou coluna inválida');
+          const resultado = obter(l, c);
+          mensagemSucesso = `Valor em [${l}][${c}]: ${resultado}`;
+          destacar = [l, c];
+          break;
+        }
+        case 'preencher': {
+          const v = parseInt(valor);
+          if (isNaN(v)) throw new Error('Valor inválido');
+          preencher(v);
+          mensagemSucesso = `Matriz preenchida com ${v}`;
+          break;
+        }
+        case 'preencherLinha': {
+          const l = parseInt(linha);
+          const v = parseInt(valor);
+          if (isNaN(l) || isNaN(v)) throw new Error('Linha ou valor inválido');
+          preencherLinha(l, v);
+          mensagemSucesso = `Linha ${l} preenchida com ${v}`;
+          break;
+        }
+        case 'preencherColuna': {
+          const c = parseInt(coluna);
+          const v = parseInt(valor);
+          if (isNaN(c) || isNaN(v)) throw new Error('Coluna ou valor inválido');
+          preencherColuna(c, v);
+          mensagemSucesso = `Coluna ${c} preenchida com ${v}`;
+          break;
+        }
+        case 'transpor':
+          transpor();
+          mensagemSucesso = 'Matriz transposta com sucesso';
+          break;
+        case 'multiplicarPorEscalar': {
+          const e = parseInt(escalar);
+          if (isNaN(e)) throw new Error('Escalar inválido');
+          multiplicarPorEscalar(e);
+          mensagemSucesso = `Matriz multiplicada por ${e}`;
+          break;
+        }
+        case 'redimensionar': {
+          const nl = parseInt(novasLinhas);
+          const nc = parseInt(novasColunas);
+          if (isNaN(nl) || isNaN(nc)) throw new Error('Dimensões inválidas');
+          redimensionar(nl, nc);
+          mensagemSucesso = `Matriz redimensionada para ${nl}×${nc}`;
+          break;
+        }
+        case 'limpar':
+          limpar();
+          mensagemSucesso = 'Matriz limpa (preenchida com zeros)';
+          break;
+        default:
+          mensagemSucesso = 'Operação realizada com sucesso';
+      }
 
-  const handleRedimensionar = () => {
-    const linhas = parseInt(novasLinhas);
-    const colunas = parseInt(novasColunas);
-    if (!isNaN(linhas) && !isNaN(colunas)) {
-      redimensionar(linhas, colunas);
-      setNovasLinhas("");
-      setNovasColunas("");
+      registrarOperacao(mensagemSucesso, 'success');
+      setMensagemAcao(mensagemSucesso);
+      setCelulaDestacada(destacar);
+
+      // Limpar inputs
+      setLinha('');
+      setColuna('');
+      setValor('');
+      setEscalar('');
+      setNovasLinhas('');
+      setNovasColunas('');
+
+      // Limpar destaque após 1.5s
+      setTimeout(() => {
+        setCelulaDestacada(null);
+      }, 1500);
+    } catch (error: unknown) {
+      let mensagemErro = 'Erro desconhecido';
+      if (typeof error === 'string') {
+        mensagemErro = `Erro: ${error}`;
+      } else if (error instanceof Error) {
+        mensagemErro = `Erro: ${error.message}`;
+      }
+
+      registrarOperacao(mensagemErro, 'error');
+      setMensagemAcao(mensagemErro);
     }
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Matriz</h2>
+    <div className="p-4 bg-gray-900 text-white min-h-screen">
+      {/* Cabeçalho com navegação */}
+      <div className="mb-6 flex justify-between items-center">
+        <Button onClick={() => navigate(-1)} aria-label="Voltar">
+          <ChevronLeft className="mr-2 h-4 w-4" />
+          Voltar
+        </Button>
+        <Button onClick={() => window.close()} variant="destructive" aria-label="Sair">
+          Sair
+        </Button>
+      </div>
 
-      {/* Mensagens */}
-      {mensagem && (
-        <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-          {mensagem}
-        </div>
-      )}
-      {erro && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {erro}
-        </div>
-      )}
+      {/* Título e descrição */}
+      <h1 className="text-xl font-bold mt-4">Matriz (Matrix)</h1>
+      <p className="mt-4">Estrutura bidimensional para armazenar dados em linhas e colunas.</p>
+      <span className="text-orange-400">9 métodos disponíveis</span>
 
-      {/* Visualiza��o da Matriz */}
-      <div className="mb-6 p-4 bg-gray-50 rounded-lg overflow-x-auto">
-        <h3 className="text-lg font-semibold mb-3 text-gray-700">
-          Matriz {info.linhas}�{info.colunas}
+      {/* Visualização da matriz */}
+      <div className="mb-6 bg-gray-800 p-4 rounded-lg overflow-x-auto">
+        <h3 className="text-sm text-gray-400 mb-2">
+          Matriz {info.linhas}×{info.colunas}
         </h3>
         <div className="inline-block">
-          {info.dados.map((linha, i) => (
+          {info.dados.map((linhaArray, i) => (
             <div key={i} className="flex gap-1 mb-1">
-              {linha.map((valor, j) => (
+              {linhaArray.map((valorCelula, j) => (
                 <div
                   key={j}
-                  className="w-16 h-16 border-2 border-gray-300 rounded flex items-center justify-center bg-white font-semibold text-lg"
+                  className={`
+                    w-14 h-14 border-2 rounded flex items-center justify-center font-semibold text-sm transition-all duration-300
+                    ${celulaDestacada && celulaDestacada[0] === i && celulaDestacada[1] === j
+                      ? 'bg-yellow-400 text-gray-900 border-yellow-600 scale-110'
+                      : 'bg-gray-700 text-white border-gray-600'}
+                  `}
+                  aria-label={`Célula [${i}][${j}] = ${valorCelula}`}
                 >
-                  {valor}
+                  {valorCelula}
                 </div>
               ))}
             </div>
           ))}
         </div>
-
-        {/* Informa��es */}
-        <div className="mt-4 p-3 bg-white border border-gray-200 rounded">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-            <div>
-              <span className="font-semibold">Dimens�o:</span> {info.linhas}�
-              {info.colunas}
-            </div>
-            <div>
-              <span className="font-semibold">Elementos:</span>{" "}
-              {info.totalElementos}
-            </div>
-            <div>
-              <span className="font-semibold">M�n/M�x:</span> {info.min}/{info.max}
-            </div>
-            <div>
-              <span className="font-semibold">Soma:</span> {info.soma}
-            </div>
-          </div>
-        </div>
       </div>
 
-      {/* Controles */}
-      <div className="space-y-4">
-        {/* Definir Valor */}
-        <div className="p-4 bg-blue-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-3 text-blue-800">
-            Definir Valor
-          </h3>
-          <div className="flex gap-2">
-            <input
-              type="number"
-              value={linhaInput}
-              onChange={(e) => setLinhaInput(e.target.value)}
-              placeholder="Linha"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-            />
-            <input
-              type="number"
-              value={colunaInput}
-              onChange={(e) => setColunaInput(e.target.value)}
-              placeholder="Coluna"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-            />
-            <input
-              type="number"
-              value={valorInput}
-              onChange={(e) => setValorInput(e.target.value)}
-              placeholder="Valor"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-            />
-            <button
-              onClick={handleDefinir}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Definir
-            </button>
-          </div>
-        </div>
+      {/* Grid de métodos */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-6">
+        {metodosDisponiveis.map((metodo) => (
+          <button
+            key={metodo.id}
+            onClick={() => setMetodoAtual(metodo.id)}
+            className={`p-2 rounded text-left flex items-center gap-2 ${
+              metodoAtual === metodo.id ? 'bg-orange-600' : 'bg-gray-700'
+            } hover:bg-orange-500 transition-colors`}
+            aria-label={`Selecionar método ${metodo.titulo}`}
+          >
+            <span role="img" aria-hidden="true">
+              {metodo.icone}
+            </span>
+            <span>{metodo.titulo}</span>
+          </button>
+        ))}
+      </div>
 
-        {/* Preencher */}
-        <div className="p-4 bg-green-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-3 text-green-800">
-            Preencher
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-            <div className="flex gap-2">
+      {/* Formulário de execução */}
+      {metodoAtual && (
+        <div className="mb-6 bg-gray-800 p-4 rounded">
+          <p className="text-gray-300 mb-4">
+            {metodosDisponiveis.find((m) => m.id === metodoAtual)?.mensagemExplicativa}
+          </p>
+          <form onSubmit={executar} className="flex flex-wrap md:flex-nowrap items-center gap-4">
+            {/* Input de linha (quando necessário) */}
+            {metodosDisponiveis.find((m) => m.id === metodoAtual)?.requisitos.includes('linha') && (
               <input
-                type="number"
-                value={valorInput}
-                onChange={(e) => setValorInput(e.target.value)}
+                type="text"
+                value={linha}
+                onChange={(e) => setLinha(e.target.value)}
+                placeholder="Linha (0-based)"
+                className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                aria-label="Índice da linha"
+              />
+            )}
+
+            {/* Input de coluna (quando necessário) */}
+            {metodosDisponiveis.find((m) => m.id === metodoAtual)?.requisitos.includes('coluna') && (
+              <input
+                type="text"
+                value={coluna}
+                onChange={(e) => setColuna(e.target.value)}
+                placeholder="Coluna (0-based)"
+                className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                aria-label="Índice da coluna"
+              />
+            )}
+
+            {/* Input de valor (quando necessário) */}
+            {metodosDisponiveis.find((m) => m.id === metodoAtual)?.requisitos.includes('valor') && (
+              <input
+                type="text"
+                value={valor}
+                onChange={(e) => setValor(e.target.value)}
                 placeholder="Valor"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                aria-label="Valor"
               />
-              <button
-                onClick={handlePreencher}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-              >
-                Tudo
-              </button>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="number"
-                value={linhaInput}
-                onChange={(e) => setLinhaInput(e.target.value)}
-                placeholder="Linha"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-              />
-              <button
-                onClick={handlePreencherLinha}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-              >
-                Linha
-              </button>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="number"
-                value={colunaInput}
-                onChange={(e) => setColunaInput(e.target.value)}
-                placeholder="Coluna"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-              />
-              <button
-                onClick={handlePreencherColuna}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-              >
-                Coluna
-              </button>
-            </div>
-          </div>
-        </div>
+            )}
 
-        {/* Opera��es */}
-        <div className="p-4 bg-purple-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-3 text-purple-800">
-            Opera��es
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            <button
-              onClick={transpor}
-              className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-            >
-              Transpor
-            </button>
-            <div className="flex gap-2 col-span-2">
+            {/* Input de escalar (quando necessário) */}
+            {metodosDisponiveis.find((m) => m.id === metodoAtual)?.requisitos.includes('escalar') && (
               <input
-                type="number"
-                value={escalarInput}
-                onChange={(e) => setEscalarInput(e.target.value)}
+                type="text"
+                value={escalar}
+                onChange={(e) => setEscalar(e.target.value)}
                 placeholder="Escalar"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                aria-label="Valor escalar"
               />
-              <button
-                onClick={handleMultiplicar}
-                className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-              >
-                Multiplicar
-              </button>
-            </div>
-            <button
-              onClick={limpar}
-              className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-            >
-              Limpar
-            </button>
-          </div>
-        </div>
+            )}
 
-        {/* Redimensionar */}
-        <div className="p-4 bg-orange-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-3 text-orange-800">
-            Redimensionar
-          </h3>
-          <div className="flex gap-2">
-            <input
-              type="number"
-              value={novasLinhas}
-              onChange={(e) => setNovasLinhas(e.target.value)}
-              placeholder="Linhas (1-10)"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-            />
-            <input
-              type="number"
-              value={novasColunas}
-              onChange={(e) => setNovasColunas(e.target.value)}
-              placeholder="Colunas (1-10)"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-            />
+            {/* Input de novas dimensões (quando necessário) */}
+            {metodosDisponiveis.find((m) => m.id === metodoAtual)?.requisitos.includes('novasLinhas') && (
+              <>
+                <input
+                  type="text"
+                  value={novasLinhas}
+                  onChange={(e) => setNovasLinhas(e.target.value)}
+                  placeholder="Linhas"
+                  className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  aria-label="Número de linhas"
+                />
+                <input
+                  type="text"
+                  value={novasColunas}
+                  onChange={(e) => setNovasColunas(e.target.value)}
+                  placeholder="Colunas"
+                  className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  aria-label="Número de colunas"
+                />
+              </>
+            )}
+
+            {/* Botão de executar */}
             <button
-              onClick={handleRedimensionar}
-              className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
+              type="submit"
+              className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition-colors font-semibold"
+              aria-label="Executar operação"
             >
-              Redimensionar
+              Executar
             </button>
-          </div>
+          </form>
+        </div>
+      )}
+
+      {/* Mensagem de feedback */}
+      {mensagemAcao && (
+        <div className="mb-6 bg-gray-800 p-3 rounded">
+          <p
+            className={`${mensagemAcao.startsWith('Erro') ? 'text-red-400' : 'text-green-400'}`}
+            role="alert"
+          >
+            {mensagemAcao}
+          </p>
+        </div>
+      )}
+
+      {/* Informações de estado */}
+      <div className="flex flex-wrap md:flex-nowrap gap-4 mb-6">
+        <div className="flex-1 bg-gray-800 p-3 rounded flex items-center justify-between min-w-[150px]">
+          <span className="text-orange-400">Dimensão:</span>
+          <span className="font-bold">{info.linhas}×{info.colunas}</span>
+        </div>
+        <div className="flex-1 bg-gray-800 p-3 rounded flex items-center justify-between min-w-[150px]">
+          <span className="text-orange-400">Elementos:</span>
+          <span className="font-bold">{info.totalElementos}</span>
+        </div>
+        <div className="flex-1 bg-gray-800 p-3 rounded flex items-center justify-between min-w-[150px]">
+          <span className="text-orange-400">Min/Max:</span>
+          <span className="font-bold">{info.min}/{info.max}</span>
+        </div>
+        <div className="flex-1 bg-gray-800 p-3 rounded flex items-center justify-between min-w-[150px]">
+          <span className="text-orange-400">Soma:</span>
+          <span className="font-bold">{info.soma}</span>
         </div>
       </div>
 
-      {/* Informa��es Adicionais */}
-      <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-        <h3 className="text-lg font-semibold mb-2 text-yellow-800">
-          9 Caracter�sticas da Matriz
-        </h3>
-        <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-          <li>
-            <strong>Acesso:</strong> O(1) - acesso direto por �ndices
-          </li>
-          <li>
-            <strong>Tamanho:</strong> 1 a 10 linhas e colunas
-          </li>
-          <li>
-            <strong>Valores:</strong> Inteiros de -1000 a 1000
-          </li>
-          <li>
-            <strong>Transpor:</strong> Troca linhas por colunas
-          </li>
-          <li>
-            <strong>Multiplica��o Escalar:</strong> Multiplica todos os elementos
-          </li>
-        </ul>
+      {/* Histórico de operações */}
+      <div className="bg-gray-800 p-4 rounded">
+        <h3 className="text-lg font-bold mb-3">Histórico de Operações</h3>
+        <div className="space-y-2 max-h-40 overflow-y-auto">
+          {historico.length > 0 ? (
+            historico.map((op, index) => (
+              <div
+                key={index}
+                className={`p-2 rounded ${
+                  op.status === 'error' ? 'bg-red-900/30 border-l-4 border-red-500' : 'bg-gray-700'
+                }`}
+              >
+                <div className="flex justify-between items-center">
+                  <span>{op.operacao}</span>
+                  <span className="text-xs text-gray-400">
+                    {new Date(op.timestamp).toLocaleTimeString()}
+                  </span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-400 text-center py-2">Nenhuma operação executada ainda</p>
+          )}
+        </div>
       </div>
     </div>
   );
