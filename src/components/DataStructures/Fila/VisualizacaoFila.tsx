@@ -2,20 +2,19 @@
  * Componente VisualizacaoFila
  *
  * @remarks
- * Interface principal para visualização e manipulação da estrutura de dados Fila.
- * Permite executar operações FIFO com feedback visual em tempo real.
+ * Interface principal para visualizaï¿½ï¿½o e manipulaï¿½ï¿½o da estrutura de dados Fila.
+ * Permite executar operaï¿½ï¿½es FIFO com feedback visual em tempo real.
  */
 
 import * as React from 'react';
 import { useFila } from './useFila';
-import QueueCell from './QueueCell';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { metodosDisponiveis, type MetodoFila } from './metodosFila';
 
 /**
- * Componente principal de visualização da Fila
+ * Componente principal de visualizaï¿½ï¿½o da Fila
  *
  * @returns Elemento React com a interface completa da Fila
  */
@@ -37,9 +36,9 @@ const VisualizacaoFila: React.FC = () => {
   const [valor, setValor] = React.useState('');
 
   /**
-   * Manipula a execução de um método da fila
+   * Manipula a execuï¿½ï¿½o de um mï¿½todo da fila
    *
-   * @param e - Evento de submit do formulário
+   * @param e - Evento de submit do formulï¿½rio
    */
   const executar = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,7 +47,7 @@ const VisualizacaoFila: React.FC = () => {
       const metodoInfo = metodosDisponiveis.find((m) => m.id === metodoAtual);
       if (!metodoInfo) return;
 
-      // Executar método
+      // Executar mï¿½todo
       await executarMetodo(metodoAtual!, valor);
 
       // Mensagens de sucesso personalizadas
@@ -64,22 +63,22 @@ const VisualizacaoFila: React.FC = () => {
           mensagemSucesso = 'Primeiro elemento visualizado';
           break;
         case 'ultimo':
-          mensagemSucesso = 'Último elemento visualizado';
+          mensagemSucesso = 'ï¿½ltimo elemento visualizado';
           break;
         case 'tamanho':
           mensagemSucesso = 'Tamanho da fila consultado';
           break;
         case 'estaVazio':
-          mensagemSucesso = 'Verificação de fila vazia realizada';
+          mensagemSucesso = 'Verificaï¿½ï¿½o de fila vazia realizada';
           break;
         case 'limpar':
           mensagemSucesso = 'Fila limpa com sucesso';
           break;
         case 'contem':
-          mensagemSucesso = `Verificação de existência do elemento ${valor} realizada`;
+          mensagemSucesso = `Verificaï¿½ï¿½o de existï¿½ncia do elemento ${valor} realizada`;
           break;
         default:
-          mensagemSucesso = 'Operação realizada com sucesso';
+          mensagemSucesso = 'Operaï¿½ï¿½o realizada com sucesso';
       }
 
       registrarOperacao(mensagemSucesso);
@@ -88,7 +87,7 @@ const VisualizacaoFila: React.FC = () => {
       // Limpar inputs
       setValor('');
 
-      // Limpar destaque após 1.5s
+      // Limpar destaque apï¿½s 1.5s
       setTimeout(() => {
         setIndiceDestacado(null);
       }, 1500);
@@ -107,7 +106,7 @@ const VisualizacaoFila: React.FC = () => {
 
   return (
     <div className="p-4 bg-gray-900 text-white min-h-screen">
-      {/* Cabeçalho com navegação */}
+      {/* Cabeï¿½alho com navegaï¿½ï¿½o */}
       <div className="mb-6 flex justify-between items-center">
         <Button onClick={() => navigate(-1)} aria-label="Voltar">
           <ChevronLeft className="mr-2 h-4 w-4" />
@@ -118,24 +117,30 @@ const VisualizacaoFila: React.FC = () => {
         </Button>
       </div>
 
-      {/* Título e descrição */}
+      {/* Tï¿½tulo e descriï¿½ï¿½o */}
       <h1 className="text-xl font-bold mt-4">Fila (Queue)</h1>
       <p className="mt-4">Estrutura FIFO (First In, First Out) para processamento ordenado.</p>
-      <span className="text-blue-400">8 métodos disponíveis</span>
+      <span className="text-blue-400">8 mï¿½todos disponï¿½veis</span>
 
-      {/* Visualização da fila (horizontal) */}
+      {/* Visualizaï¿½ï¿½o da fila (horizontal) */}
       <div className="mb-6 bg-gray-800 p-4 rounded-lg overflow-x-auto">
         <ul className="flex flex-row gap-2 min-h-[100px] items-center justify-start" role="list">
           {elementos.length > 0 ? (
             elementos.map((el, index) => (
-              <QueueCell
+              <li
                 key={el.id}
-                value={el.value}
-                indice={index}
-                destacado={indiceDestacado === index}
-                isFrente={index === 0}
-                isFinal={index === elementos.length - 1}
-              />
+                role="listitem"
+                className={`
+                  w-16 h-16 flex items-center justify-center rounded-lg font-bold text-lg
+                  border-2 transition-all duration-300
+                  ${indiceDestacado === index ? 'bg-yellow-400 text-gray-900 border-yellow-600 scale-110' : 'bg-gray-700 text-white border-gray-600'}
+                  ${index === 0 ? 'border-green-400' : ''}
+                  ${index === elementos.length - 1 ? 'border-purple-400' : ''}
+                `}
+                aria-label={`Elemento ${el.value} na posiÃ§Ã£o ${index}${index === 0 ? ', frente da fila' : ''}${index === elementos.length - 1 ? ', final da fila' : ''}`}
+              >
+                {el.value}
+              </li>
             ))
           ) : (
             <li role="listitem" className="text-gray-400 text-center py-8 w-full">
@@ -148,12 +153,12 @@ const VisualizacaoFila: React.FC = () => {
         {elementos.length > 0 && (
           <div className="mt-4 flex justify-between text-center text-sm">
             <span className="text-green-400"> FRENTE DA FILA</span>
-            <span className="text-purple-400">FINAL DA FILA ¡</span>
+            <span className="text-purple-400">FINAL DA FILA ï¿½</span>
           </div>
         )}
       </div>
 
-      {/* Grid de métodos */}
+      {/* Grid de mï¿½todos */}
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-6">
         {metodosDisponiveis.map((metodo) => (
           <button
@@ -162,7 +167,7 @@ const VisualizacaoFila: React.FC = () => {
             className={`p-2 rounded text-left flex items-center gap-2 ${
               metodoAtual === metodo.id ? 'bg-blue-600' : 'bg-gray-700'
             } hover:bg-blue-500 transition-colors`}
-            aria-label={`Selecionar método ${metodo.titulo}`}
+            aria-label={`Selecionar mï¿½todo ${metodo.titulo}`}
           >
             <span role="img" aria-hidden="true">
               {metodo.icone}
@@ -172,30 +177,30 @@ const VisualizacaoFila: React.FC = () => {
         ))}
       </div>
 
-      {/* Formulário de execução */}
+      {/* Formulï¿½rio de execuï¿½ï¿½o */}
       {metodoAtual && (
         <div className="mb-6 bg-gray-800 p-4 rounded">
           <p className="text-gray-300 mb-4">
             {metodosDisponiveis.find((m) => m.id === metodoAtual)?.mensagemExplicativa}
           </p>
           <form onSubmit={executar} className="flex flex-wrap md:flex-nowrap items-center gap-4">
-            {/* Input de valor (quando necessário) */}
+            {/* Input de valor (quando necessï¿½rio) */}
             {metodosDisponiveis.find((m) => m.id === metodoAtual)?.requisitos.includes('valor') && (
               <input
                 type="text"
                 value={valor}
                 onChange={(e) => setValor(e.target.value)}
-                placeholder="Valor (número inteiro)"
+                placeholder="Valor (nï¿½mero inteiro)"
                 className="p-2 rounded bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 aria-label="Valor do elemento"
               />
             )}
 
-            {/* Botão de executar */}
+            {/* Botï¿½o de executar */}
             <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors font-semibold"
-              aria-label="Executar operação"
+              aria-label="Executar operaï¿½ï¿½o"
             >
               Executar
             </button>
@@ -215,7 +220,7 @@ const VisualizacaoFila: React.FC = () => {
         </div>
       )}
 
-      {/* Informações de estado */}
+      {/* Informaï¿½ï¿½es de estado */}
       <div className="flex flex-wrap md:flex-nowrap gap-4 mb-6">
         <div className="flex-1 bg-gray-800 p-3 rounded flex items-center justify-between min-w-[150px]">
           <span className="text-blue-400">Tamanho:</span>
@@ -233,9 +238,9 @@ const VisualizacaoFila: React.FC = () => {
         </div>
       </div>
 
-      {/* Histórico de operações */}
+      {/* Histï¿½rico de operaï¿½ï¿½es */}
       <div className="bg-gray-800 p-4 rounded">
-        <h3 className="text-lg font-bold mb-3">Histórico de Operações</h3>
+        <h3 className="text-lg font-bold mb-3">Histï¿½rico de Operaï¿½ï¿½es</h3>
         <div className="space-y-2 max-h-40 overflow-y-auto">
           {historico.length > 0 ? (
             historico.map((op, index) => (
@@ -254,7 +259,7 @@ const VisualizacaoFila: React.FC = () => {
               </div>
             ))
           ) : (
-            <p className="text-gray-400 text-center py-2">Nenhuma operação executada ainda</p>
+            <p className="text-gray-400 text-center py-2">Nenhuma operaï¿½ï¿½o executada ainda</p>
           )}
         </div>
       </div>
